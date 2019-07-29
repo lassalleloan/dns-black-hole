@@ -1,0 +1,249 @@
+#!/bin/sh -u
+# -u: Treat unset variables as an error when performing parameter expansion.
+# If expansion is attempted on an unset interactive, exits with a non-zero status.
+#
+# Manage the dns-black-hole app
+#
+# author: Loan Lassalle <https://github.com/lassalleloan>
+
+# Image tag and container name
+IMAGE_TAG="dns-black-hole"
+CONTAINER_NAME="$IMAGE_TAG"
+
+# Source and destination directories for the docker container"s volume
+SRC_VOLUME="$(sed -En 's/^# SRC_VOLUME=([^ #]+)/\1/p' env.list)"
+DST_VOLUME="$(sed -En 's/^# DST_VOLUME=([^ #]+)/\1/p' env.list)"
+
+# Processing mode
+INTERACTIVE=false
+DETACH=false
+
+# Default verbosity level
+VERBOSITY=1
+
+# Display a banner
+banner() {
+    echo "     _             _    _         _       _        _     "
+    echo "  __| |_ _  ______| |__| |__ _ __| |_____| |_  ___| |___ "
+    echo " / _\` | ' \(_-<___| '_ \ / _\` / _| / /___| ' \/ _ \ / -_)"
+    echo " \__,_|_||_/__/   |_.__/_\__,_\__|_\_\   |_||_\___/_\___|"
+    echo "                                                         "
+}
+
+# Usage of the script
+usage() {
+  echo "Usage: run-app [--interactive | --detach --verbosity (0 | 1 | 2)]"
+  echo 
+  echo "Manage the dns-black-hole app"
+  echo
+  echo "Version: 1.0.0, build deadbeef"
+  echo
+  echo "Author:"
+  echo "  Loan Lassalle - <https://github.com/lassalleloan>"
+  echo
+  echo "Options:"
+  echo "  -i, --interactive                 Keep stdin open even if not attached and allocate a pseudo-tty"
+  echo "  -d, --detach                      Leave the container running in the background"
+  echo "  -v, --verbosity (0 | 1 | 2)       Level of verbosity: no ouput, step information, interactive"
+  echo "  -h, --help                        Help on how to use this script"
+}
+
+# Build docker container
+build() {
+    local image_tag="$1"
+    local container_name="$2"
+    local verbosity="$3"
+
+    if [ "$verbosity" -ne 0 ]; then
+        echo "Building $container_name docker container"
+    fi
+
+    if [ "$verbosity" -eq 2 ]; then
+        docker build --force-rm --tag "$image_tag" .
+    else
+        docker build --force-rm --quiet --tag "$image_tag" . >/dev/null 2>&1
+    fi
+}
+
+# Start docker container
+start() {
+    local image_tag="$1"
+    local container_name="$2"
+    local src_directory="$3"
+    local dst_directory="$4"
+    local interactive="$5"
+    local verbosity="$6"
+
+    if [ "$verbosity" -ne 0 ]; then
+        echo "Starting $container_name docker container"
+    fi
+
+    if [ "$interactive" = true ]; then
+        docker run \
+            --interactive \
+            --entrypoint "sh" \
+            --env-file env.list \
+            --name "$container_name" \
+            --rm \
+            --tty \
+            --volume "$src_directory":"$dst_directory" \
+            "$image_tag"
+    else
+        if [ "$verbosity" -eq 2 ]; then
+            docker run \
+                --interactive \
+                --env-file env.list \
+                --name "$container_name" \
+                --rm \
+                --tty \
+                --volume "$src_directory":"$dst_directory" \
+                "$image_tag"
+        else
+            docker run \
+                --interactive \
+                --env-file env.list \
+                --name "$container_name" \
+                --rm \
+                --tty \
+                --volume "$src_directory":"$dst_directory" \
+                "$image_tag" >/dev/null 2>&1
+        fi
+    fi
+}
+
+# Stop docker container
+stop() {
+    local container_name="$1"
+    local verbosity="$2"
+
+    if [ "$verbosity" -ne 0 ]; then
+        echo "Stopping $container_name docker container"
+    fi
+
+    if [ "$verbosity" -eq 2 ]; then
+        docker stop "$container_name"
+    else
+        docker stop "$container_name" >/dev/null 2>&1
+    fi
+}
+
+# Kill docker container
+kill() {
+    local container_name="$1"
+    local verbosity="$2"
+
+    if [ "$verbosity" -ne 0 ]; then
+        echo "Killing $container_name docker container"
+    fi
+
+    if [ "$verbosity" -eq 2 ]; then
+        docker kill "$container_name"
+    else
+        docker kill "$container_name" >/dev/null 2>&1
+    fi
+}
+
+# Remove docker container
+remove() {
+    local container_name="$1"
+    local verbosity="$2"
+
+    if [ "$verbosity" -ne 0 ]; then
+        echo "Removing $container_name docker container"
+    fi
+
+    if [ "$verbosity" -eq 2 ]; then
+        docker rm --volumes "$container_name"
+    else
+        docker rm --volumes "$container_name" >/dev/null 2>&1
+    fi
+}
+
+# Check if it is an integer
+exit_if_not_integer() {
+    local INTEGER_REGEX='^[0-9]{1}$'
+    local variable="$1"
+
+    if ! echo "$variable" | grep -Eq  "$INTEGER_REGEX"; then
+        echo "$variable: not a integer"
+        echo
+        usage
+        exit 1
+    fi
+}
+
+# Main
+for arg in "$@"; do
+    shift
+    case "$arg" in
+        "--interactive")
+            set -- "$@" "-i"
+            ;;
+        "--detach")
+            set -- "$@" "-d"
+            ;;
+        "--verbosity")
+            set -- "$@" "-v"
+            ;;
+        "--help")
+            set -- "$@" "-h"
+            ;;
+        "--"*)
+            set -- "$@" "-?"
+            ;;
+        *)
+            set -- "$@" "$arg"
+    esac
+done
+
+while getopts ":idv:h" option; do
+    case $option in
+        i)
+            INTERACTIVE=true
+            ;;
+        d)
+            DETACH=true
+            ;;
+        v)
+            VERBOSITY=$OPTARG
+            exit_if_not_integer "$VERBOSITY"
+            ;;
+        h)
+            usage
+            exit
+            ;;
+        :)
+            echo "$OPTARG: argument required"
+            exit 1
+            ;;
+        \?)
+            echo "$OPTARG: invalid option"
+            usage
+            exit 1
+            ;;
+    esac
+done
+
+if [ "$INTERACTIVE" = true -a "$DETACH" = true ]; then
+    echo "--interactive --detach: options must be separated"
+    usage
+    exit 1
+fi
+
+if [ "$INTERACTIVE" = true ]; then
+    VERBOSITY=2
+fi
+
+if [ "$VERBOSITY" -ne 0 ]; then
+    banner
+fi
+
+sh pre-run
+
+build "$IMAGE_TAG" "$CONTAINER_NAME" "$VERBOSITY"
+start "$IMAGE_TAG" "$CONTAINER_NAME" "$SRC_VOLUME" "$DST_VOLUME" "$INTERACTIVE" "$VERBOSITY"
+stop "$CONTAINER_NAME" "$VERBOSITY"
+kill "$CONTAINER_NAME" "$VERBOSITY"
+remove "$CONTAINER_NAME" "$VERBOSITY"
+
+sh post-run
