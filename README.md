@@ -10,3 +10,9 @@ sudo chown username:group directory
 Need to rename file *.example
 Need to review pre-run with get version without file downloading
 Need to review post-run
+
+^(0[.]0[.]0[.]0 (http[s]?:\/\/)?([a-zA-Z0-9_-]*[.])*reddit[.]\w+)$
+# $1
+
+^# (0[.]0[.]0[.]0 (http[s]?:\/\/)?([a-zA-Z0-9_-]*[.])*reddit[.]\w+)$
+$1
