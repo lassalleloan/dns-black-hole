@@ -2,9 +2,102 @@
 # -u: Treat unset variables as an error when performing parameter expansion.
 # If expansion is attempted on an unset interactive, exits with a non-zero status.
 #
-# Commands to be processed after running run-app.sh
+# Process executed after application manager execution
 #
 # author: Loan Lassalle <https://github.com/lassalleloan>
 
+# Default verbosity level
+VERBOSITY=1
+
+# Display a banner
+banner() {
+    echo
+    echo "Post-run"
+}
+
+# Usage of the script
+usage() {
+  echo "Usage: post-run [--verbosity (0 | 1 | 2)]"
+  echo 
+  echo "Process executed after run-app execution"
+  echo
+  echo "Version: 1.0.0, build deadbeef"
+  echo
+  echo "Author:"
+  echo "  Loan Lassalle - <https://github.com/lassalleloan>"
+  echo
+  echo "Options:"
+  echo "  -v, --verbosity (0 | 1 | 2)       Level of verbosity: no ouput, step information, interactive"
+  echo "  -h, --help                        Help on how to use this script"
+}
+
+# Check if it is an integer
+exit_if_not_integer() {
+    local INTEGER_REGEX='^[0-9]{1}$'
+    local variable="$1"
+
+    if ! echo "$variable" | grep -Eq  "$INTEGER_REGEX"; then
+        echo "$variable: not a integer"
+        echo
+        usage
+        exit 1
+    fi
+}
+
+# Main
+for arg in "$@"; do
+    shift
+    case "$arg" in
+        "--verbosity")
+            set -- "$@" "-v"
+            ;;
+        "--help")
+            set -- "$@" "-h"
+            ;;
+        "--"*)
+            set -- "$@" "-?"
+            ;;
+        *)
+            set -- "$@" "$arg"
+    esac
+done
+
+while getopts ":v:h" option; do
+    case $option in
+        v)
+            VERBOSITY=$OPTARG
+            exit_if_not_integer "$VERBOSITY"
+            ;;
+        h)
+            usage
+            exit
+            ;;
+        :)
+            echo "$OPTARG: argument required"
+            exit 1
+            ;;
+        \?)
+            echo "$OPTARG: invalid option"
+            usage
+            exit 1
+            ;;
+    esac
+done
+
+if [ "$VERBOSITY" -ne 0 ]; then
+    banner
+fi
+
+# Create a hard link to /etc/hosts of local machine
+if [ "$VERBOSITY" -ne 0 ]; then
+    echo "Creation of hard link to /etc/hosts of local machine"
+fi
+if ! [ -L /etc/hosts -a -e /etc/hosts ]; then # <------------------------------------- does not work
+    sudo ln -f dns-black-hole/src/hosts /etc/hosts
+fi
+
 # Flush the local DNS cache
+if [ "$VERBOSITY" -ne 0 ]; then
+    echo "Flushing of local DNS cache"
+fi
 killall -HUP mDNSResponder

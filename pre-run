@@ -2,6 +2,116 @@
 # -u: Treat unset variables as an error when performing parameter expansion.
 # If expansion is attempted on an unset interactive, exits with a non-zero status.
 #
-# Commands to be processed after running run-app.sh
+# Process executed before application manager execution
 #
 # author: Loan Lassalle <https://github.com/lassalleloan>
+
+# Default verbosity level
+VERBOSITY=1
+
+# Display a banner
+banner() {
+    echo
+    echo "Pre-run"
+}
+
+# Usage of the script
+usage() {
+  echo "Usage: pre-run [--verbosity (0 | 1 | 2)]"
+  echo 
+  echo "Process executed before run-app execution"
+  echo
+  echo "Version: 1.0.0, build deadbeef"
+  echo
+  echo "Author:"
+  echo "  Loan Lassalle - <https://github.com/lassalleloan>"
+  echo
+  echo "Options:"
+  echo "  -v, --verbosity (0 | 1 | 2)       Level of verbosity: no ouput, step information, interactive"
+  echo "  -h, --help                        Help on how to use this script"
+}
+
+# Check if it is an integer
+exit_if_not_integer() {
+    local INTEGER_REGEX='^[0-9]{1}$'
+    local variable="$1"
+
+    if ! echo "$variable" | grep -Eq  "$INTEGER_REGEX"; then
+        echo "$variable: not a integer"
+        echo
+        usage
+        exit 1
+    fi
+}
+
+# Main
+for arg in "$@"; do
+    shift
+    case "$arg" in
+        "--verbosity")
+            set -- "$@" "-v"
+            ;;
+        "--help")
+            set -- "$@" "-h"
+            ;;
+        "--"*)
+            set -- "$@" "-?"
+            ;;
+        *)
+            set -- "$@" "$arg"
+    esac
+done
+
+while getopts ":v:h" option; do
+    case $option in
+        v)
+            VERBOSITY=$OPTARG
+            exit_if_not_integer "$VERBOSITY"
+            ;;
+        h)
+            usage
+            exit
+            ;;
+        :)
+            echo "$OPTARG: argument required"
+            exit 1
+            ;;
+        \?)
+            echo "$OPTARG: invalid option"
+            usage
+            exit 1
+            ;;
+    esac
+done
+
+if [ "$VERBOSITY" -ne 0 ]; then
+    banner
+fi
+
+# Download the package.json to get the new version number
+if [ "$VERBOSITY" -ne 0 ]; then
+    echo "Downloading of the package.json"
+fi
+curl https://raw.githubusercontent.com/StevenBlack/hosts/master/package.json \
+    --output version/new_package.json \
+    --silent
+
+# Differentiate the current version from the new version
+if [ "$VERBOSITY" -ne 0 ]; then
+    echo "Differentiating of the current version from the new version"
+fi
+current_version="$(sed -En 's/^ *"version": *"([0-9]([.][0-9]*)*)",$/\1/p' version/current_package.json)"
+new_version="$(sed -En 's/^ *"version": *"([0-9]([.][0-9]*)*)",$/\1/p' version/new_package.json)"
+if [ "$VERBOSITY" -eq 2 ]; then
+    echo "Current version: $current_version"
+    echo "New version: $new_version"
+fi
+
+# Launch application manager
+if [ ! -f src/hosts -o ! -s src/hosts -o "$new_version" \> "$current_version" ]; then
+    rm -f version/current_package.json
+    mv version/new_package.json version/current_package.json
+else
+    rm -f version/new_package.json
+    exit 1
+fi
