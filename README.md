@@ -6,3 +6,7 @@ Author: Loan Lassalle
 sudo chown username:group directory
 -rw-r--r--  1 root  wheel  213 24 jul 19:25 /etc/hosts
 -rw-r--r--  1 root  wheel  213 24 jul 19:25 /etc/hosts.bk
+
+Need to rename file *.example
+Need to review pre-run with get version without file downloading
+Need to review post-run

@@ -97,20 +97,26 @@ curl https://raw.githubusercontent.com/StevenBlack/hosts/master/package.json \
     --silent
 
 # Differentiate the current version from the new version
-if [ "$VERBOSITY" -ne 0 ]; then
-    echo "Differentiating of the current version from the new version"
-fi
-current_version="$(sed -En 's/^ *"version": *"([0-9]([.][0-9]*)*)",$/\1/p' version/current_package.json)"
-new_version="$(sed -En 's/^ *"version": *"([0-9]([.][0-9]*)*)",$/\1/p' version/new_package.json)"
-if [ "$VERBOSITY" -eq 2 ]; then
-    echo "Current version: $current_version"
-    echo "New version: $new_version"
+if [ -f version/current_package.json ]; then
+    if [ "$VERBOSITY" -ne 0 ]; then
+        echo "Differentiating of the current version from the new version"
+    fi
+    current_version="$(sed -En 's/^ *"version": *"([0-9]([.][0-9]*)*)",$/\1/p' version/current_package.json)"
+    new_version="$(sed -En 's/^ *"version": *"([0-9]([.][0-9]*)*)",$/\1/p' version/new_package.json)"
+    if [ "$VERBOSITY" -eq 2 ]; then
+        echo "Current version: $current_version"
+        echo "New version: $new_version"
+    fi
 fi
 
 # Launch application manager
-if [ ! -f src/hosts -o ! -s src/hosts -o "$new_version" \> "$current_version" ]; then
-    rm -f version/current_package.json
-    mv version/new_package.json version/current_package.json
+if [ ! -f src/hosts -o \
+    ! -s src/hosts -o \
+    ! -f version/current_package.json -o \
+    ! -s version/current_package.json -o \
+    "$new_version" \> "$current_version" ]; then
+        rm -f version/current_package.json
+        mv version/new_package.json version/current_package.json
 else
     rm -f version/new_package.json
     exit 1
