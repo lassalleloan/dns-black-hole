@@ -11,34 +11,57 @@ VERBOSITY=1
 
 # Display a banner
 banner() {
-    echo
-    echo "Post-run"
+    printf "\n"
+    printf "Post-run\n"
 }
 
 # Usage of the script
 usage() {
-  echo "Usage: post-run [--verbosity (0 | 1 | 2)]"
-  echo 
-  echo "Process executed after run-app execution"
-  echo
-  echo "Version: 1.0.0, build deadbeef"
-  echo
-  echo "Author:"
-  echo "  Loan Lassalle - <https://github.com/lassalleloan>"
-  echo
-  echo "Options:"
-  echo "  -v, --verbosity (0 | 1 | 2)       Level of verbosity: no ouput, step information, interactive"
-  echo "  -h, --help                        Help on how to use this script"
+  printf "Usage: post-run [--verbosity (0 | 1 | 2)]\n"
+  printf "\n"
+  printf "Process executed after run-app execution\n"
+  printf "\n"
+  printf "Version: 1.0.0, build deadbeef\n"
+  printf "\n"
+  printf "Author:\n"
+  printf "  Loan Lassalle - <https://github.com/lassalleloan>\n"
+  printf "\n"
+  printf "Options:\n"
+  printf "  -v, --verbosity (0 | 1 | 2)       Level of verbosity: no ouput, step information, interactive\n"
+  printf "  -h, --help                        Help on how to use this script\n"
+}
+
+# Create a hard link to /etc/hosts of local machine
+hard_link() {
+    local verbosity="$1"
+
+    if [ "$verbosity" -ne 0 ]; then
+        echo "Creation of hard link to /etc/hosts of local machine"
+    fi
+
+    is_hard_link=$(stat -f "%l" /etc/hosts)
+    if [ is_hard_link -le 1 ]; then
+        sudo ln -f dns-black-hole/src/hosts /etc/hosts
+    fi
+}
+
+# Flush the local DNS cache
+flush_dns_cache() {
+    local verbosity="$1"
+
+    if [ "$verbosity" -ne 0 ]; then
+        printf "Flushing of local DNS cache\n"
+    fi
+
+    killall -HUP mDNSResponder
 }
 
 # Check if it is an integer
 exit_if_not_integer() {
-    local INTEGER_REGEX='^[0-9]{1}$'
     local variable="$1"
 
-    if ! echo "$variable" | grep -Eq  "$INTEGER_REGEX"; then
-        echo "$variable: not a integer"
-        echo
+    if ! echo "$variable" | grep -Eq  "^[0-9]{1}$"; then
+        printf "%s: not a integer\n" $variable
         usage
         exit 1
     fi
@@ -73,11 +96,11 @@ while getopts ":v:h" option; do
             exit
             ;;
         :)
-            echo "$OPTARG: argument required"
+            printf "%s: argument required\n" $OPTARG
             exit 1
             ;;
         \?)
-            echo "$OPTARG: invalid option"
+            printf "%s: invalid option\n" $OPTARG
             usage
             exit 1
             ;;
@@ -89,15 +112,7 @@ if [ "$VERBOSITY" -ne 0 ]; then
 fi
 
 # Create a hard link to /etc/hosts of local machine
-if [ "$VERBOSITY" -ne 0 ]; then
-    echo "Creation of hard link to /etc/hosts of local machine"
-fi
-if ! [ -L /etc/hosts -a -e /etc/hosts ]; then # <------------------------------------- does not work
-    sudo ln -f dns-black-hole/src/hosts /etc/hosts
-fi
+hard_link "$VERBOSITY"
 
 # Flush the local DNS cache
-if [ "$VERBOSITY" -ne 0 ]; then
-    echo "Flushing of local DNS cache"
-fi
-killall -HUP mDNSResponder
+flush_dns_cache "$VERBOSITY"
