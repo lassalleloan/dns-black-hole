@@ -2,4 +2,3 @@ backup/hosts.bk
 src/hosts
 src/myhosts
 env.list
-version/current_package.json
