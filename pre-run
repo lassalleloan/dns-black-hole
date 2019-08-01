@@ -52,7 +52,9 @@ check_updates() {
 
     sed -i '' -E "/^# CURRENT_VERSION=([0-9]([.][0-9]*)*)$/s/$current_version/$new_version/" env.list
 
-    [ ! -f src/hosts -o ! -s src/hosts -o "$new_version" \> "$current_version" ] || exit 1
+    if [ -f src/hosts -a -s src/hosts -a "$new_version" == "$current_version" ]; then
+        exit 1
+    fi
 }
 
 # Check if it is an integer
