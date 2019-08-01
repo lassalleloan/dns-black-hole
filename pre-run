@@ -14,6 +14,7 @@ VERBOSITY=1
 
 # Display a banner
 banner() {
+    printf "\n"
     printf "Pre-run\n"
 }
 
