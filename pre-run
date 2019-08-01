@@ -14,24 +14,23 @@ VERBOSITY=1
 
 # Display a banner
 banner() {
-    echo
-    echo "Pre-run"
+    printf "Pre-run\n"
 }
 
 # Usage of the script
 usage() {
-  echo "Usage: pre-run [--verbosity (0 | 1 | 2)]"
-  echo 
-  echo "Process executed before run-app execution"
-  echo
-  echo "Version: 1.0.0, build deadbeef"
-  echo
-  echo "Author:"
-  echo "  Loan Lassalle - <https://github.com/lassalleloan>"
-  echo
-  echo "Options:"
-  echo "  -v, --verbosity (0 | 1 | 2)       Level of verbosity: no ouput, step information, interactive"
-  echo "  -h, --help                        Help on how to use this script"
+  printf "Usage: pre-run [--verbosity (0 | 1 | 2)]\n"
+  printf "\n"
+  printf "Process executed before run-app execution\n"
+  printf "\n"
+  printf "Version: 1.0.0, build deadbeef\n"
+  printf "\n"
+  printf "Author:\n"
+  printf "  Loan Lassalle - <https://github.com/lassalleloan>\n"
+  printf "\n"
+  printf "Options:\n"
+  printf "  -v, --verbosity (0 | 1 | 2)       Level of verbosity: no ouput, step information, interactive\n"
+  printf "  -h, --help                        Help on how to use this script\n"
 }
 
 # Check for updates
@@ -40,15 +39,15 @@ check_updates() {
     local verbosity="$2"
 
     if [ "$verbosity" -ne 0 ]; then
-        echo "Checking for updates"
+        printf "Checking for updates\n"
     fi
 
     new_version="$(curl https://raw.githubusercontent.com/StevenBlack/hosts/master/package.json --silent | \
         sed -En 's/^ *"version": *"([0-9]([.][0-9]*)*)",$/\1/p')"
 
     if [ "$verbosity" -eq 2 ]; then
-        echo "Current version: $current_version"
-        echo "New version:     $new_version"
+        printf "Current version: %*s\n" 12 $current_version
+        printf "Current version: %*s\n" 12 $new_version
     fi
 
     sed -i '' -E "/^# CURRENT_VERSION=([0-9]([.][0-9]*)*)$/s/$current_version/$new_version/" env.list
@@ -58,12 +57,10 @@ check_updates() {
 
 # Check if it is an integer
 exit_if_not_integer() {
-    local INTEGER_REGEX='^[0-9]{1}$'
     local variable="$1"
 
-    if ! echo "$variable" | grep -Eq  "$INTEGER_REGEX"; then
-        echo "$variable: not a integer"
-        echo
+    if ! echo "$variable" | grep -Eq  "^[0-9]{1}$"; then
+        printf "%s: not a integer\n" $variable
         usage
         exit 1
     fi
@@ -98,11 +95,11 @@ while getopts ":v:h" option; do
             exit
             ;;
         :)
-            echo "$OPTARG: argument required"
+            printf "%s: argument required\n" $OPTARG
             exit 1
             ;;
         \?)
-            echo "$OPTARG: invalid option"
+            printf "%s: invalid option\n" $OPTARG
             usage
             exit 1
             ;;
