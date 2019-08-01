@@ -26,29 +26,29 @@ VERBOSITY=1
 
 # Display a banner
 banner() {
-    echo "     _             _    _         _       _        _     "
-    echo "  __| |_ _  ______| |__| |__ _ __| |_____| |_  ___| |___ "
-    echo " / _\` | ' \(_-<___| '_ \ / _\` / _| / /___| ' \/ _ \ / -_)"
-    echo " \__,_|_||_/__/   |_.__/_\__,_\__|_\_\   |_||_\___/_\___|"
-    echo "                                                         "
+    printf "     _             _    _         _       _        _     \n"
+    printf "  __| |_ _  ______| |__| |__ _ __| |_____| |_  ___| |___ \n"
+    printf " / _\` | ' \(_-<___| '_ \ / _\` / _| / /___| ' \/ _ \ / -_)\n"
+    printf " \__,_|_||_/__/   |_.__/_\__,_\__|_\_\   |_||_\___/_\___|\n"
+    printf "                                                         \n"
 }
 
 # Usage of the script
 usage() {
-  echo "Usage: run_app [--interactive | --detach --verbosity (0 | 1 | 2)]"
-  echo 
-  echo "Manage the dns-black-hole app"
-  echo
-  echo "Version: 1.0.0, build deadbeef"
-  echo
-  echo "Author:"
-  echo "  Loan Lassalle - <https://github.com/lassalleloan>"
-  echo
-  echo "Options:"
-  echo "  -i, --interactive                 Keep stdin open even if not attached and allocate a pseudo-tty"
-  echo "  -d, --detach                      Leave the container running in the background"
-  echo "  -v, --verbosity (0 | 1 | 2)       Level of verbosity: no ouput, step information, interactive"
-  echo "  -h, --help                        Help on how to use this script"
+  printf "Usage: run-app [--interactive | --detach --verbosity (0 | 1 | 2)]\n"
+  printf "\n"
+  printf "Manage the dns-black-hole app\n"
+  printf "\n"
+  printf "Version: 1.0.0, build deadbeef\n"
+  printf "\n"
+  printf "Author:\n"
+  printf "  Loan Lassalle - <https://github.com/lassalleloan>\n"
+  printf "\n"
+  printf "Options:\n"
+  printf "  -i, --interactive                 Keep stdin open even if not attached and allocate a pseudo-tty\n"
+  printf "  -d, --detach                      Leave the container running in the background\n"
+  printf "  -v, --verbosity (0 | 1 | 2)       Level of verbosity: no ouput, step information, interactive\n"
+  printf "  -h, --help                        Help on how to use this script\n"
 }
 
 # Build docker container
@@ -58,7 +58,7 @@ build() {
     local verbosity="$3"
 
     if [ "$verbosity" -ne 0 ]; then
-        echo "Building $container_name docker container"
+        printf "Building %s docker container\n" $container_name
     fi
 
     if [ "$verbosity" -eq 2 ]; then
@@ -80,7 +80,7 @@ start() {
     local verbosity="$8"
 
     if [ "$verbosity" -ne 0 ]; then
-        echo "Starting $container_name docker container"
+        printf "Starting %s docker container\n" $container_name
     fi
 
     if [ "$interactive" = true ]; then
@@ -125,7 +125,7 @@ stop() {
     local verbosity="$2"
 
     if [ "$verbosity" -ne 0 ]; then
-        echo "Stopping $container_name docker container"
+        printf "Stopping %s docker container\n" $container_name
     fi
 
     if [ "$verbosity" -eq 2 ]; then
@@ -141,7 +141,7 @@ kill() {
     local verbosity="$2"
 
     if [ "$verbosity" -ne 0 ]; then
-        echo "Killing $container_name docker container"
+        printf "Killing %s docker container\n" $container_name
     fi
 
     if [ "$verbosity" -eq 2 ]; then
@@ -157,7 +157,7 @@ remove() {
     local verbosity="$2"
 
     if [ "$verbosity" -ne 0 ]; then
-        echo "Removing $container_name docker container"
+        printf "Removing %s docker container\n" $container_name
     fi
 
     if [ "$verbosity" -eq 2 ]; then
@@ -169,12 +169,10 @@ remove() {
 
 # Check if it is an integer
 exit_if_not_integer() {
-    local INTEGER_REGEX='^[0-9]{1}$'
     local variable="$1"
 
-    if ! echo "$variable" | grep -Eq  "$INTEGER_REGEX"; then
-        echo "$variable: not a integer"
-        echo
+    if ! echo "$variable" | grep -Eq  "^[0-9]{1}$"; then
+        printf "%s: not a integer\n" $variable
         usage
         exit 1
     fi
@@ -221,11 +219,11 @@ while getopts ":idv:h" option; do
             exit
             ;;
         :)
-            echo "$OPTARG: argument required"
+            printf "%s: argument required\n" $OPTARG
             exit 1
             ;;
         \?)
-            echo "$OPTARG: invalid option"
+            printf "%s: invalid option\n" $OPTARG
             usage
             exit 1
             ;;
@@ -233,41 +231,39 @@ while getopts ":idv:h" option; do
 done
 
 if [ "$INTERACTIVE" = true -a "$DETACH" = true ]; then
-    echo "--interactive --detach: options must be separated"
+    printf "--interactive --detach: options must be separated\n"
     usage
     exit 1
-fi
+else
+    if [ "$INTERACTIVE" = true ]; then
+        VERBOSITY=2
+    fi
 
-if [ "$INTERACTIVE" = true ]; then
-    VERBOSITY=2
-fi
+    if [ "$VERBOSITY" -ne 0 ]; then
+        banner
+    fi
 
-if [ "$VERBOSITY" -ne 0 ]; then
-    banner
-fi
+    # Pre-run
+    if ! sh pre-run -v "$VERBOSITY"; then
+        exit 1
+    fi
 
-# Pre-run
-sh pre-run -v "$VERBOSITY"
-if [ $? -ne 0 ]; then
-    exit $?
-fi
+    # Run
+    if [ "$VERBOSITY" -ne 0 ]; then
+        printf "\n"
+        printf "Run\n"
+    fi
+    
+    if ! build "$IMAGE_TAG" "$CONTAINER_NAME" "$VERBOSITY" -o \
+        ! start "$IMAGE_TAG" "$CONTAINER_NAME" "$SRC_VOLUME_1" "$DST_VOLUME_1" \
+        "$SRC_VOLUME_2" "$DST_VOLUME_2" "$INTERACTIVE" "$VERBOSITY"; then
+        exit 1
+    fi
 
-# Run
-if [ "$VERBOSITY" -ne 0 ]; then
-    echo
-    echo "Run"
-fi
-build "$IMAGE_TAG" "$CONTAINER_NAME" "$VERBOSITY"
-if [ $? -ne 0 ]; then
-    exit $?
-fi
-start "$IMAGE_TAG" "$CONTAINER_NAME" "$SRC_VOLUME_1" "$DST_VOLUME_1"  "$SRC_VOLUME_2" "$DST_VOLUME_2" "$INTERACTIVE" "$VERBOSITY"
-if [ $? -ne 0 ]; then
-    exit $?
-fi
-stop "$CONTAINER_NAME" "$VERBOSITY"
-kill "$CONTAINER_NAME" "$VERBOSITY"
-remove "$CONTAINER_NAME" "$VERBOSITY"
+    stop "$CONTAINER_NAME" "$VERBOSITY"
+    kill "$CONTAINER_NAME" "$VERBOSITY"
+    remove "$CONTAINER_NAME" "$VERBOSITY"
 
-# Post-run
-sh post-run -v "$VERBOSITY" 
+    # Post-run
+    sh post-run -v "$VERBOSITY"
+fi
