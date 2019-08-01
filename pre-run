@@ -6,6 +6,9 @@
 #
 # author: Loan Lassalle <https://github.com/lassalleloan>
 
+# Current version of StevenBlack/hosts
+CURRENT_VERSION="$(sed -En 's/^# CURRENT_VERSION=([0-9]([.][0-9]*)*)$/\1/p' env.list)"
+
 # Default verbosity level
 VERBOSITY=1
 
@@ -29,6 +32,28 @@ usage() {
   echo "Options:"
   echo "  -v, --verbosity (0 | 1 | 2)       Level of verbosity: no ouput, step information, interactive"
   echo "  -h, --help                        Help on how to use this script"
+}
+
+# Check for updates
+check_updates() {
+    local current_version="$1"
+    local verbosity="$2"
+
+    if [ "$verbosity" -ne 0 ]; then
+        echo "Checking for updates"
+    fi
+
+    new_version="$(curl https://raw.githubusercontent.com/StevenBlack/hosts/master/package.json --silent | \
+        sed -En 's/^ *"version": *"([0-9]([.][0-9]*)*)",$/\1/p')"
+
+    if [ "$verbosity" -eq 2 ]; then
+        echo "Current version: $current_version"
+        echo "New version:     $new_version"
+    fi
+
+    sed -i '' -E "/^# CURRENT_VERSION=([0-9]([.][0-9]*)*)$/s/$current_version/$new_version/" env.list
+
+    [ "$new_version" \> "$current_version" ] || exit 1
 }
 
 # Check if it is an integer
@@ -88,36 +113,5 @@ if [ "$VERBOSITY" -ne 0 ]; then
     banner
 fi
 
-# Download the package.json to get the new version number
-if [ "$VERBOSITY" -ne 0 ]; then
-    echo "Downloading of the package.json"
-fi
-curl https://raw.githubusercontent.com/StevenBlack/hosts/master/package.json \
-    --output version/new_package.json \
-    --silent
-
-# Differentiate the current version from the new version
-if [ -f version/current_package.json ]; then
-    if [ "$VERBOSITY" -ne 0 ]; then
-        echo "Differentiating of the current version from the new version"
-    fi
-    current_version="$(sed -En 's/^ *"version": *"([0-9]([.][0-9]*)*)",$/\1/p' version/current_package.json)"
-    new_version="$(sed -En 's/^ *"version": *"([0-9]([.][0-9]*)*)",$/\1/p' version/new_package.json)"
-    if [ "$VERBOSITY" -eq 2 ]; then
-        echo "Current version: $current_version"
-        echo "New version: $new_version"
-    fi
-fi
-
-# Launch application manager
-if [ ! -f src/hosts -o \
-    ! -s src/hosts -o \
-    ! -f version/current_package.json -o \
-    ! -s version/current_package.json -o \
-    "$new_version" \> "$current_version" ]; then
-        rm -f version/current_package.json
-        mv version/new_package.json version/current_package.json
-else
-    rm -f version/new_package.json
-    exit 1
-fi
+# Check for updates
+check_updates "$CURRENT_VERSION" "$VERBOSITY"
