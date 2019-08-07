@@ -254,8 +254,11 @@ else
         printf "Run\n"
     fi
     
-    if ! build "$IMAGE_TAG" "$CONTAINER_NAME" "$VERBOSITY" -o \
-        ! start "$IMAGE_TAG" "$CONTAINER_NAME" "$SRC_VOLUME_1" "$DST_VOLUME_1" \
+    if ! build "$IMAGE_TAG" "$CONTAINER_NAME" "$VERBOSITY"; then
+        exit 1
+    fi
+    
+    if ! start "$IMAGE_TAG" "$CONTAINER_NAME" "$SRC_VOLUME_1" "$DST_VOLUME_1" \
         "$SRC_VOLUME_2" "$DST_VOLUME_2" "$INTERACTIVE" "$VERBOSITY"; then
         exit 1
     fi
