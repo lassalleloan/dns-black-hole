@@ -45,10 +45,10 @@ usage() {
   printf "  Loan Lassalle - <https://github.com/lassalleloan>\n"
   printf "\n"
   printf "Options:\n"
-  printf "  -i, --interactive                 Keep stdin open even if not attached and allocate a pseudo-tty\n"
-  printf "  -d, --detach                      Leave the container running in the background\n"
-  printf "  -v, --verbosity (0 | 1 | 2)       Level of verbosity: no ouput, step information, interactive\n"
-  printf "  -h, --help                        Help on how to use this script\n"
+  printf "  -i, --interactive               Keep stdin open even if not attached and allocate a pseudo-tty\n"
+  printf "  -d, --detach                    Leave the container running in the background\n"
+  printf "  -v, --verbosity (0 | 1 | 2)     Level of verbosity: no ouput, step information, interactive\n"
+  printf "  -h, --help                      Help on how to use this script\n"
 }
 
 # Build docker container
