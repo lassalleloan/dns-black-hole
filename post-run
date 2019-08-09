@@ -14,8 +14,8 @@ VERBOSITY="$(sed -En 's/^# VERBOSITY=([0-9]([.][0-9]*)*)$/\1/p' env.list)"
 
 # Display a banner
 banner() {
-    printf "\n"
-    printf "Post-run\n"
+  printf "\n"
+  printf "Post-run\n"
 }
 
 # Usage of the script
@@ -36,83 +36,83 @@ usage() {
 
 # Create a hard link between /etc/hosts and $HARD_LINK_SRC_FILE
 hard_link() {
-    local verbosity="$1"
+  local verbosity="$1"
 
-    if [ "$verbosity" -ne 0 ]; then
-        printf "Creation of hard link between /etc/hosts and %s\n" $HARD_LINK_SRC_FILE
-    fi
+  if [ "$verbosity" -ne 0 ]; then
+    printf "Creation of hard link between /etc/hosts and %s\n" $HARD_LINK_SRC_FILE
+  fi
 
-    is_hard_link=$(stat -f "%l" /etc/hosts)
-    if [ "$is_hard_link" -le 1 ]; then
-        printf "sudo command is required to create the hard link, please run the following command:\n"
-        printf "sudo ln -f %s /etc/hosts\n" $HARD_LINK_SRC_FILE
-    fi
+  is_hard_link=$(stat -f "%l" /etc/hosts)
+  if [ "$is_hard_link" -le 1 ]; then
+    printf "sudo command is required to create the hard link, please run the following command:\n"
+    printf "sudo ln -f %s /etc/hosts\n" $HARD_LINK_SRC_FILE
+  fi
 }
 
 # Flush the local DNS cache
 flush_dns_cache() {
-    local verbosity="$1"
+  local verbosity="$1"
 
-    if [ "$verbosity" -ne 0 ]; then
-        printf "Flushing of local DNS cache\n"
-    fi
+  if [ "$verbosity" -ne 0 ]; then
+    printf "Flushing of local DNS cache\n"
+  fi
 
-    killall -HUP mDNSResponder
+  killall -HUP mDNSResponder
 }
 
 # Check if it is an integer
 exit_if_not_integer() {
-    local variable="$1"
+  local variable="$1"
 
-    if ! echo "$variable" | grep -Eq  "^[0-9]{1}$"; then
-        printf "%s: not a integer\n" $variable
-        usage
-        exit 1
-    fi
+  if ! echo "$variable" | grep -Eq  "^[0-9]{1}$"; then
+    printf "%s: not a integer\n" $variable
+    usage
+    exit 1
+  fi
 }
 
 # Main
 for arg in "$@"; do
-    shift
-    case "$arg" in
-        "--verbosity")
-            set -- "$@" "-v"
-            ;;
-        "--help")
-            set -- "$@" "-h"
-            ;;
-        "--"*)
-            set -- "$@" "-?"
-            ;;
-        *)
-            set -- "$@" "$arg"
-    esac
+  shift
+  case "$arg" in
+    "--verbosity")
+      set -- "$@" "-v"
+      ;;
+    "--help")
+      set -- "$@" "-h"
+      ;;
+    "--"*)
+      set -- "$@" "-?"
+      ;;
+    *)
+      set -- "$@" "$arg"
+  esac
 done
 
 while getopts ":v:h" option; do
-    case $option in
-        v)
-            VERBOSITY=$OPTARG
-            exit_if_not_integer "$VERBOSITY"
-            ;;
-        h)
-            usage
-            exit
-            ;;
-        :)
-            printf "%s: argument required\n" $OPTARG
-            exit 1
-            ;;
-        \?)
-            printf "%s: invalid option\n" $OPTARG
-            usage
-            exit 1
-            ;;
-    esac
+  case $option in
+    v)
+      VERBOSITY=$OPTARG
+      exit_if_not_integer "$VERBOSITY"
+      ;;
+    h)
+      usage
+      exit
+      ;;
+    :)
+      printf "%s: argument required\n" $OPTARG
+      exit 1
+      ;;
+    \?)
+      printf "%s: invalid option\n" $OPTARG
+      usage
+      exit 1
+      ;;
+  esac
 done
 
 if [ "$VERBOSITY" -ne 0 ]; then
-    banner
+  banner
 fi
 
 # Create a hard link to /etc/hosts of local machine

@@ -26,11 +26,11 @@ VERBOSITY="$(sed -En 's/^# VERBOSITY=([0-9]([.][0-9]*)*)$/\1/p' env.list)"
 
 # Display a banner
 banner() {
-    printf "     _             _    _         _       _        _                      \n"
-    printf "  __| |_ _  ______| |__| |__ _ __| |_____| |_  ___| |___   __ _ _ __ _ __ \n"
-    printf " / _\` | ' \(_-<___| '_ \ / _\` / _| / /___| ' \/ _ \ / -_) / _\` | '_ \ '_ \ \n"
-    printf " \__,_|_||_/__/   |_.__/_\__,_\__|_\_\   |_||_\___/_\___| \__,_| .__/ .__/\n"
-    printf "                                                               |_|  |_|   \n"
+  printf "     _             _    _         _       _        _                      \n"
+  printf "  __| |_ _  ______| |__| |__ _ __| |_____| |_  ___| |___   __ _ _ __ _ __ \n"
+  printf " / _\` | ' \(_-<___| '_ \ / _\` / _| / /___| ' \/ _ \ / -_) / _\` | '_ \ '_ \ \n"
+  printf " \__,_|_||_/__/   |_.__/_\__,_\__|_\_\   |_||_\___/_\___| \__,_| .__/ .__/\n"
+  printf "                                                               |_|  |_|   \n"
 }
 
 # Usage of the script
@@ -53,220 +53,220 @@ usage() {
 
 # Build docker container
 build() {
-    local image_tag="$1"
-    local container_name="$2"
-    local verbosity="$3"
+  local image_tag="$1"
+  local container_name="$2"
+  local verbosity="$3"
 
-    if [ "$verbosity" -ne 0 ]; then
-        printf "Building %s docker container\n" $container_name
-    fi
+  if [ "$verbosity" -ne 0 ]; then
+    printf "Building %s docker container\n" $container_name
+  fi
 
-    if [ "$verbosity" -eq 2 ]; then
-        docker build --force-rm --tag "$image_tag" .
-    else
-        docker build --force-rm --quiet --tag "$image_tag" . >/dev/null 2>&1
-    fi
+  if [ "$verbosity" -eq 2 ]; then
+    docker build --force-rm --tag "$image_tag" .
+  else
+    docker build --force-rm --quiet --tag "$image_tag" . >/dev/null 2>&1
+  fi
 }
 
 # Start docker container
 start() {
-    local image_tag="$1"
-    local container_name="$2"
-    local src_directory_1="$3"
-    local dst_directory_1="$4"
-    local src_directory_2="$5"
-    local dst_directory_2="$6"
-    local interactive="$7"
-    local verbosity="$8"
+  local image_tag="$1"
+  local container_name="$2"
+  local src_directory_1="$3"
+  local dst_directory_1="$4"
+  local src_directory_2="$5"
+  local dst_directory_2="$6"
+  local interactive="$7"
+  local verbosity="$8"
 
-    if [ "$verbosity" -ne 0 ]; then
-        printf "Starting %s docker container\n" $container_name
-    fi
+  if [ "$verbosity" -ne 0 ]; then
+    printf "Starting %s docker container\n" $container_name
+  fi
 
-    if [ "$interactive" = true ]; then
-        docker run \
-            --interactive \
-            --entrypoint "sh" \
-            --env-file env.list \
-            --name "$container_name" \
-            --rm \
-            --tty \
-            --volume "$src_directory_1":"$dst_directory_1" \
-            --volume "$src_directory_2":"$dst_directory_2" \
-            "$image_tag"
+  if [ "$interactive" = true ]; then
+    docker run \
+      --interactive \
+      --entrypoint "sh" \
+      --env-file env.list \
+      --name "$container_name" \
+      --rm \
+      --tty \
+      --volume "$src_directory_1":"$dst_directory_1" \
+      --volume "$src_directory_2":"$dst_directory_2" \
+      "$image_tag"
+  else
+    if [ "$verbosity" -eq 2 ]; then
+      docker run \
+        --interactive \
+        --env-file env.list \
+        --name "$container_name" \
+        --rm \
+        --tty \
+        --volume "$src_directory_1":"$dst_directory_1" \
+        --volume "$src_directory_2":"$dst_directory_2" \
+        "$image_tag"
     else
-        if [ "$verbosity" -eq 2 ]; then
-            docker run \
-                --interactive \
-                --env-file env.list \
-                --name "$container_name" \
-                --rm \
-                --tty \
-                --volume "$src_directory_1":"$dst_directory_1" \
-                --volume "$src_directory_2":"$dst_directory_2" \
-                "$image_tag"
-        else
-            docker run \
-                --interactive \
-                --env-file env.list \
-                --name "$container_name" \
-                --rm \
-                --tty \
-                --volume "$src_directory_1":"$dst_directory_1" \
-                --volume "$src_directory_2":"$dst_directory_2" \
-                "$image_tag" >/dev/null 2>&1
-        fi
+      docker run \
+        --interactive \
+        --env-file env.list \
+        --name "$container_name" \
+        --rm \
+        --tty \
+        --volume "$src_directory_1":"$dst_directory_1" \
+        --volume "$src_directory_2":"$dst_directory_2" \
+        "$image_tag" >/dev/null 2>&1
     fi
+  fi
 }
 
 # Stop docker container
 stop() {
-    local container_name="$1"
-    local verbosity="$2"
+  local container_name="$1"
+  local verbosity="$2"
 
-    if [ "$verbosity" -ne 0 ]; then
-        printf "Stopping %s docker container\n" $container_name
-    fi
+  if [ "$verbosity" -ne 0 ]; then
+    printf "Stopping %s docker container\n" $container_name
+  fi
 
-    if [ "$verbosity" -eq 2 ]; then
-        docker stop "$container_name"
-    else
-        docker stop "$container_name" >/dev/null 2>&1
-    fi
+  if [ "$verbosity" -eq 2 ]; then
+    docker stop "$container_name"
+  else
+    docker stop "$container_name" >/dev/null 2>&1
+  fi
 }
 
 # Kill docker container
 kill() {
-    local container_name="$1"
-    local verbosity="$2"
+  local container_name="$1"
+  local verbosity="$2"
 
-    if [ "$verbosity" -ne 0 ]; then
-        printf "Killing %s docker container\n" $container_name
-    fi
+  if [ "$verbosity" -ne 0 ]; then
+    printf "Killing %s docker container\n" $container_name
+  fi
 
-    if [ "$verbosity" -eq 2 ]; then
-        docker kill "$container_name"
-    else
-        docker kill "$container_name" >/dev/null 2>&1
-    fi
+  if [ "$verbosity" -eq 2 ]; then
+    docker kill "$container_name"
+  else
+    docker kill "$container_name" >/dev/null 2>&1
+  fi
 }
 
 # Remove docker container
 remove() {
-    local container_name="$1"
-    local verbosity="$2"
+  local container_name="$1"
+  local verbosity="$2"
 
-    if [ "$verbosity" -ne 0 ]; then
-        printf "Removing %s docker container\n" $container_name
-    fi
+  if [ "$verbosity" -ne 0 ]; then
+    printf "Removing %s docker container\n" $container_name
+  fi
 
-    if [ "$verbosity" -eq 2 ]; then
-        docker rm --volumes "$container_name"
-    else
-        docker rm --volumes "$container_name" >/dev/null 2>&1
-    fi
+  if [ "$verbosity" -eq 2 ]; then
+    docker rm --volumes "$container_name"
+  else
+    docker rm --volumes "$container_name" >/dev/null 2>&1
+  fi
 }
 
 # Check if it is an integer
 exit_if_not_integer() {
-    local variable="$1"
+  local variable="$1"
 
-    if ! echo "$variable" | grep -Eq  "^[0-9]{1}$"; then
-        printf "%s: not a integer\n" $variable
-        usage
-        exit 1
-    fi
+  if ! echo "$variable" | grep -Eq  "^[0-9]{1}$"; then
+    printf "%s: not a integer\n" $variable
+    usage
+    exit 1
+  fi
 }
 
 # Main
 for arg in "$@"; do
-    shift
-    case "$arg" in
-        "--interactive")
-            set -- "$@" "-i"
-            ;;
-        "--detach")
-            set -- "$@" "-d"
-            ;;
-        "--verbosity")
-            set -- "$@" "-v"
-            ;;
-        "--help")
-            set -- "$@" "-h"
-            ;;
-        "--"*)
-            set -- "$@" "-?"
-            ;;
-        *)
-            set -- "$@" "$arg"
-    esac
+  shift
+  case "$arg" in
+    "--interactive")
+      set -- "$@" "-i"
+      ;;
+    "--detach")
+      set -- "$@" "-d"
+      ;;
+    "--verbosity")
+      set -- "$@" "-v"
+      ;;
+    "--help")
+      set -- "$@" "-h"
+      ;;
+    "--"*)
+      set -- "$@" "-?"
+      ;;
+    *)
+      set -- "$@" "$arg"
+  esac
 done
 
 while getopts ":idv:h" option; do
-    case $option in
-        i)
-            INTERACTIVE=true
-            ;;
-        d)
-            DETACH=true
-            ;;
-        v)
-            VERBOSITY=$OPTARG
-            exit_if_not_integer "$VERBOSITY"
-            ;;
-        h)
-            usage
-            exit
-            ;;
-        :)
-            printf "%s: argument required\n" $OPTARG
-            exit 1
-            ;;
-        \?)
-            printf "%s: invalid option\n" $OPTARG
-            usage
-            exit 1
-            ;;
-    esac
+  case $option in
+    i)
+      INTERACTIVE=true
+      ;;
+    d)
+      DETACH=true
+      ;;
+    v)
+      VERBOSITY=$OPTARG
+      exit_if_not_integer "$VERBOSITY"
+      ;;
+    h)
+      usage
+      exit
+      ;;
+    :)
+      printf "%s: argument required\n" $OPTARG
+      exit 1
+      ;;
+    \?)
+      printf "%s: invalid option\n" $OPTARG
+      usage
+      exit 1
+      ;;
+  esac
 done
 
 if [ "$INTERACTIVE" = true -a "$DETACH" = true ]; then
-    printf "--interactive --detach: options must be separated\n"
-    usage
-    exit 1
+  printf "--interactive --detach: options must be separated\n"
+  usage
+  exit 1
 else
-    if [ "$INTERACTIVE" = true ]; then
-        VERBOSITY=2
-    fi
+  if [ "$INTERACTIVE" = true ]; then
+    VERBOSITY=2
+  fi
 
-    if [ "$VERBOSITY" -ne 0 ]; then
-        banner
-    fi
+  if [ "$VERBOSITY" -ne 0 ]; then
+    banner
+  fi
 
-    # Pre-run
-    if ! sh pre-run -v "$VERBOSITY"; then
-        exit 1
-    fi
+  # Pre-run
+  if ! sh pre-run -v "$VERBOSITY"; then
+    exit 1
+  fi
 
-    # Run
-    if [ "$VERBOSITY" -ne 0 ]; then
-        printf "\n"
-        printf "Run\n"
-    fi
-    
-    if ! build "$IMAGE_TAG" "$CONTAINER_NAME" "$VERBOSITY"; then
-        exit 1
-    fi
-    
-    if ! start "$IMAGE_TAG" "$CONTAINER_NAME" "$SRC_VOLUME_1" "$DST_VOLUME_1" \
-        "$SRC_VOLUME_2" "$DST_VOLUME_2" "$INTERACTIVE" "$VERBOSITY"; then
-        exit 1
-    fi
+  # Run
+  if [ "$VERBOSITY" -ne 0 ]; then
+    printf "\n"
+    printf "Run\n"
+  fi
+  
+  if ! build "$IMAGE_TAG" "$CONTAINER_NAME" "$VERBOSITY"; then
+    exit 1
+  fi
+  
+  if ! start "$IMAGE_TAG" "$CONTAINER_NAME" "$SRC_VOLUME_1" "$DST_VOLUME_1" \
+    "$SRC_VOLUME_2" "$DST_VOLUME_2" "$INTERACTIVE" "$VERBOSITY"; then
+    exit 1
+  fi
 
-    stop "$CONTAINER_NAME" "$VERBOSITY"
-    kill "$CONTAINER_NAME" "$VERBOSITY"
-    remove "$CONTAINER_NAME" "$VERBOSITY"
+  stop "$CONTAINER_NAME" "$VERBOSITY"
+  kill "$CONTAINER_NAME" "$VERBOSITY"
+  remove "$CONTAINER_NAME" "$VERBOSITY"
 
-    # Post-run
-    sh post-run -v "$VERBOSITY"
+  # Post-run
+  sh post-run -v "$VERBOSITY"
 fi
