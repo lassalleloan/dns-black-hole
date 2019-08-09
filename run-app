@@ -58,7 +58,7 @@ build() {
   local verbosity="$3"
 
   if [ "$verbosity" -ne 0 ]; then
-    printf "Building %s docker container\n" $container_name
+    printf "Building %s docker container\n" "$container_name"
   fi
 
   if [ "$verbosity" -eq 2 ]; then
@@ -80,7 +80,7 @@ start() {
   local verbosity="$8"
 
   if [ "$verbosity" -ne 0 ]; then
-    printf "Starting %s docker container\n" $container_name
+    printf "Starting %s docker container\n" "$container_name"
   fi
 
   if [ "$interactive" = true ]; then
@@ -125,7 +125,7 @@ stop() {
   local verbosity="$2"
 
   if [ "$verbosity" -ne 0 ]; then
-    printf "Stopping %s docker container\n" $container_name
+    printf "Stopping %s docker container\n" "$container_name"
   fi
 
   if [ "$verbosity" -eq 2 ]; then
@@ -141,7 +141,7 @@ kill() {
   local verbosity="$2"
 
   if [ "$verbosity" -ne 0 ]; then
-    printf "Killing %s docker container\n" $container_name
+    printf "Killing %s docker container\n" "$container_name"
   fi
 
   if [ "$verbosity" -eq 2 ]; then
@@ -157,7 +157,7 @@ remove() {
   local verbosity="$2"
 
   if [ "$verbosity" -ne 0 ]; then
-    printf "Removing %s docker container\n" $container_name
+    printf "Removing %s docker container\n" "$container_name"
   fi
 
   if [ "$verbosity" -eq 2 ]; then
@@ -172,7 +172,7 @@ exit_if_not_integer() {
   local variable="$1"
 
   if ! echo "$variable" | grep -Eq  "^[0-9]{1}$"; then
-    printf "%s: not a integer\n" $variable
+    printf "%s: not a integer\n" "$variable"
     usage
     exit 1
   fi
@@ -219,18 +219,18 @@ while getopts ":idv:h" option; do
       exit
       ;;
     :)
-      printf "%s: argument required\n" $OPTARG
+      printf "%s: argument required\n" "$OPTARG"
       exit 1
       ;;
     \?)
-      printf "%s: invalid option\n" $OPTARG
+      printf "%s: invalid option\n" "$OPTARG"
       usage
       exit 1
       ;;
   esac
 done
 
-if [ "$INTERACTIVE" = true -a "$DETACH" = true ]; then
+if [ "$INTERACTIVE" = true ] && [ "$DETACH" = true ]; then
   printf "--interactive --detach: options must be separated\n"
   usage
   exit 1
