@@ -10,7 +10,7 @@
 HARD_LINK_SRC_FILE="$(sed -En 's/^# HARD_LINK_SRC_FILE=([^ #]+)/\1/p' env.list)"
 
 # Default verbosity level
-VERBOSITY=1
+VERBOSITY="$(sed -En 's/^# VERBOSITY=([0-9]([.][0-9]*)*)$/\1/p' env.list)"
 
 # Display a banner
 banner() {
@@ -30,8 +30,8 @@ usage() {
   printf "  Loan Lassalle - <https://github.com/lassalleloan>\n"
   printf "\n"
   printf "Options:\n"
-  printf "  -v, --verbosity (0 | 1 | 2)       Level of verbosity: no ouput, step information, interactive\n"
-  printf "  -h, --help                        Help on how to use this script\n"
+  printf "  -v, --verbosity (0 | 1 | 2)     Level of verbosity: no ouput, step information, interactive\n"
+  printf "  -h, --help                      Help on how to use this script\n"
 }
 
 # Create a hard link between /etc/hosts and $HARD_LINK_SRC_FILE
