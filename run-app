@@ -21,6 +21,9 @@ DST_VOLUME_2="$(sed -En 's/^# DST_VOLUME_2=([^ #]+)/\1/p' env.list)"
 INTERACTIVE=false
 DETACH=false
 
+# Bypass any prior checking
+FORCE=false
+
 # Default verbosity level
 VERBOSITY="$(sed -En 's/^# VERBOSITY=([0-9]([.][0-9]*)*)$/\1/p' env.list)"
 
@@ -35,7 +38,7 @@ banner() {
 
 # Usage of the script
 usage() {
-  printf "Usage: run-app [--interactive | --detach --verbosity (0 | 1 | 2)]\n"
+  printf "Usage: run-app [--interactive | --detach --force --verbosity (0 | 1 | 2)]\n"
   printf "\n"
   printf "Manage the dns-black-hole app\n"
   printf "\n"
@@ -47,6 +50,7 @@ usage() {
   printf "Options:\n"
   printf "  -i, --interactive               Keep stdin open even if not attached and allocate a pseudo-tty\n"
   printf "  -d, --detach                    Leave the container running in the background\n"
+  printf "  -f, --force                     Force the application to run, bypass any prior checking\n"
   printf "  -v, --verbosity (0 | 1 | 2)     Level of verbosity: no ouput, step information, interactive\n"
   printf "  -h, --help                      Help on how to use this script\n"
 }
@@ -188,6 +192,9 @@ for arg in "$@"; do
     "--detach")
       set -- "$@" "-d"
       ;;
+    "--force")
+      set -- "$@" "-f"
+      ;;
     "--verbosity")
       set -- "$@" "-v"
       ;;
@@ -202,13 +209,16 @@ for arg in "$@"; do
   esac
 done
 
-while getopts ":idv:h" option; do
+while getopts ":idfv:h" option; do
   case $option in
     i)
       INTERACTIVE=true
       ;;
     d)
       DETACH=true
+      ;;
+    f)
+      FORCE=true
       ;;
     v)
       VERBOSITY=$OPTARG
@@ -244,8 +254,10 @@ else
   fi
 
   # Pre-run
-  if ! sh pre-run -v "$VERBOSITY"; then
-    exit 1
+  if [ "$FORCE" = false ]; then
+    if ! sh pre-run -v "$VERBOSITY"; then
+      exit 0
+    fi
   fi
 
   # Run
