@@ -10,7 +10,7 @@
 HOSTS_VERSION="$(sed -En 's/^# HOSTS_VERSION=([0-9]([.][0-9]*)*)$/\1/p' env.list)"
 
 # Default verbosity level
-VERBOSITY=="$(sed -En 's/^# VERBOSITY=([0-9]([.][0-9]*)*)$/\1/p' env.list)"
+VERBOSITY="$(sed -En 's/^# VERBOSITY=([0-9]([.][0-9]*)*)$/\1/p' env.list)"
 
 # Display a banner
 banner() {
