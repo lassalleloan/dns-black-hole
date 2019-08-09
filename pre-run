@@ -47,13 +47,13 @@ check_updates() {
     | sed -En 's/^ *"version": *"([0-9]([.][0-9]*)*)",$/\1/p')"
 
   if [ "$verbosity" -eq 2 ]; then
-    printf "Current version: %*s\n" 12 $current_version
-    printf "Current version: %*s\n" 12 $new_version
+    printf "Current version: %*s\n" 12 "$current_version"
+    printf "Current version: %*s\n" 12 "$new_version"
   fi
 
   sed -i '' -E "/^# CURRENT_VERSION=([0-9]([.][0-9]*)*)$/s/$current_version/$new_version/" env.list
 
-  if [ -f src/hosts -a -s src/hosts -a "$new_version" == "$current_version" ]; then
+  if [ -f src/hosts ] && [ -s src/hosts ] && [ "$new_version" == "$current_version" ]; then
     exit 1
   fi
 }
@@ -63,7 +63,7 @@ exit_if_not_integer() {
   local variable="$1"
 
   if ! echo "$variable" | grep -Eq  "^[0-9]{1}$"; then
-    printf "%s: not a integer\n" $variable
+    printf "%s: not a integer\n" "$variable"
     usage
     exit 1
   fi
@@ -98,11 +98,11 @@ while getopts ":v:h" option; do
       exit
       ;;
     :)
-      printf "%s: argument required\n" $OPTARG
+      printf "%s: argument required\n" "$OPTARG"
       exit 1
       ;;
     \?)
-      printf "%s: invalid option\n" $OPTARG
+      printf "%s: invalid option\n" "$OPTARG"
       usage
       exit 1
       ;;
