@@ -43,18 +43,21 @@ check_updates() {
     printf "Checking for updates\n"
   fi
 
-  new_version="$(curl https://raw.githubusercontent.com/StevenBlack/hosts/master/package.json --silent \
-    | sed -En 's/^ *"version": *"([0-9]([.][0-9]*)*)",$/\1/p')"
+  new_version="$(curl --silent https://raw.githubusercontent.com/StevenBlack/hosts/master/package.json | \
+    sed -En 's/^ *"version": *"([0-9]([.][0-9]*)*)",$/\1/p')"
 
   if [ "$verbosity" -eq 2 ]; then
     printf "Current version: %*s\n" 12 "$hosts_version"
     printf "New version: %*s\n" 12 "$new_version"
   fi
 
-  # Edit HOSTS_VERSION variable in env.list file
-  sed -i '' -E "/^# HOSTS_VERSION=([0-9]([.][0-9]*)*)$/s/$hosts_version/$new_version/" env.list
+  if [ ! -f src/hosts ] || [ ! -s src/hosts ] || [ "$hosts_version" \< "$new_version" ]; then
 
-  if [ -f src/hosts ] && [ -s src/hosts ] && [ "$new_version" == "$current_version" ]; then
+    # Edit HOSTS_VERSION variable in env.list file
+    sed -i '' -E "/^# HOSTS_VERSION=([0-9]([.][0-9]*)*)$/s/$hosts_version/$new_version/" env.list
+  else
+
+    # Stop all future process
     exit 1
   fi
 }
