@@ -57,7 +57,13 @@ flush_dns_cache() {
     printf "Flushing of local DNS cache\n"
   fi
 
-  killall -HUP mDNSResponder
+  if [ "$verbosity" -eq 2 ]; then
+    dscacheutil -flushcache
+    killall -HUP mDNSResponder
+  else 
+    dscacheutil -flushcache >/dev/null 2>&1
+    killall -HUP mDNSResponder >/dev/null 2>&1
+  fi
 }
 
 # Check if it is an integer
