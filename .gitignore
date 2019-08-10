@@ -1,4 +1,6 @@
 backup/hosts.bk
 src/hosts
 src/myhosts
+src/whitelist
+src/blacklist
 env.list
