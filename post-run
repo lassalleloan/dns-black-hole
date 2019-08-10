@@ -126,3 +126,6 @@ hard_link "$VERBOSITY"
 
 # Flush the local DNS cache
 flush_dns_cache "$VERBOSITY"
+
+# To avoid exit 1 of the DNS cache flushing
+exit 0
