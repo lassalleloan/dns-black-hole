@@ -17,6 +17,12 @@ DST_VOLUME_1="$(sed -En 's/^# DST_VOLUME_1=([^ #]+)/\1/p' env.list)"
 SRC_VOLUME_2="$(sed -En 's/^# SRC_VOLUME_2=([^ #]+)/\1/p' env.list)"
 DST_VOLUME_2="$(sed -En 's/^# DST_VOLUME_2=([^ #]+)/\1/p' env.list)"
 
+SRC_VOLUME_3="$(sed -En 's/^# SRC_VOLUME_3=([^ #]+)/\1/p' env.list)"
+DST_VOLUME_3="$(sed -En 's/^# DST_VOLUME_3=([^ #]+)/\1/p' env.list)"
+
+SRC_VOLUME_4="$(sed -En 's/^# SRC_VOLUME_4=([^ #]+)/\1/p' env.list)"
+DST_VOLUME_4="$(sed -En 's/^# DST_VOLUME_4=([^ #]+)/\1/p' env.list)"
+
 # Processing mode
 INTERACTIVE=false
 DETACH=false
@@ -84,8 +90,12 @@ start_container() {
   local dst_directory_1="$4"
   local src_directory_2="$5"
   local dst_directory_2="$6"
-  local interactive="$7"
-  local verbosity="$8"
+  local src_directory_3="$7"
+  local dst_directory_3="$8"
+  local src_directory_4="$9"
+  local dst_directory_4="${10}"
+  local interactive="${11}"
+  local verbosity="${12}"
 
   if [ "$verbosity" -ne 0 ]; then
     printf "Starting %s docker container\n" "$container_name"
@@ -101,6 +111,8 @@ start_container() {
       --tty \
       --volume "$src_directory_1":"$dst_directory_1" \
       --volume "$src_directory_2":"$dst_directory_2" \
+      --volume "$src_directory_3":"$dst_directory_3" \
+      --volume "$src_directory_4":"$dst_directory_4" \
       "$image_tag"
   else
     if [ "$verbosity" -eq 2 ]; then
@@ -112,6 +124,8 @@ start_container() {
         --tty \
         --volume "$src_directory_1":"$dst_directory_1" \
         --volume "$src_directory_2":"$dst_directory_2" \
+        --volume "$src_directory_3":"$dst_directory_3" \
+        --volume "$src_directory_4":"$dst_directory_4" \
         "$image_tag"
     else
       docker run \
@@ -122,6 +136,8 @@ start_container() {
         --tty \
         --volume "$src_directory_1":"$dst_directory_1" \
         --volume "$src_directory_2":"$dst_directory_2" \
+        --volume "$src_directory_3":"$dst_directory_3" \
+        --volume "$src_directory_4":"$dst_directory_4" \
         "$image_tag" >/dev/null 2>&1
     fi
   fi
@@ -410,8 +426,12 @@ else
     exit 1
   fi
   
-  if ! start_container "$IMAGE_TAG" "$CONTAINER_NAME" "$SRC_VOLUME_1" "$DST_VOLUME_1" \
-    "$SRC_VOLUME_2" "$DST_VOLUME_2" "$INTERACTIVE" "$VERBOSITY"; then
+  if ! start_container "$IMAGE_TAG" "$CONTAINER_NAME" \
+    "$SRC_VOLUME_1" "$DST_VOLUME_1" \
+    "$SRC_VOLUME_2" "$DST_VOLUME_2" \
+    "$SRC_VOLUME_3" "$DST_VOLUME_3" \
+    "$SRC_VOLUME_4" "$DST_VOLUME_4" \
+    "$INTERACTIVE" "$VERBOSITY"; then
     exit 1
   fi
 
