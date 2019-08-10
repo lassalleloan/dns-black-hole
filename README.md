@@ -114,7 +114,9 @@ manually flush your DNS cache once the new hosts file is in place.
 
 Open a Terminal and run:
 
+```
 sudo dscacheutil -flushcache;sudo killall -HUP mDNSResponder
+```
 
 ## Miscellaneous
 
