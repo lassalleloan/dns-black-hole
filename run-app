@@ -218,7 +218,7 @@ remove_volumes_unused() {
   if [ "$verbosity" -eq 2 ]; then
     docker volume prune
   else
-    docker volume prune --force 2>/dev/null
+    docker volume prune --force >/dev/null 2>&1
   fi
 }
 
@@ -249,7 +249,7 @@ remove_images_unused() {
   if [ "$verbosity" -eq 2 ]; then
     docker image prune
   else
-    docker image prune --force 2>/dev/null
+    docker image prune --force >/dev/null 2>&1
   fi
 }
 
