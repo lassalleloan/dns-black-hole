@@ -400,6 +400,7 @@ elif [ "$INTERACTIVE" = true ] || [ "$DETACH" = true ] && [ "$PURGE" = true ]; t
   exit 1
 elif [ "$PURGE" = true ]; then
   remove_all "$VERBOSITY"
+  exit 0
 else
   if [ "$INTERACTIVE" = true ]; then
     VERBOSITY=2
