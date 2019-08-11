@@ -25,7 +25,7 @@ DST_VOLUME_4="$(sed -En 's/^# DST_VOLUME_4=([^ #]+)/\1/p' env.list)"
 
 # Processing mode
 INTERACTIVE=false
-DETACH=false
+DETACH=true
 
 # Bypass any prior checking
 FORCE=false
@@ -390,12 +390,12 @@ if [ "$INTERACTIVE" = true ] && [ "$DETACH" = true ] && [ "$PURGE" = true ]; the
   printf -- "--interactive --detach --purge: options must be used separately\n"
   usage
   exit 1
-elif [ "$INTERACTIVE" = true ] && [ "$DETACH" = true ]; then
-  printf -- "--interactive --detach: options must be used separately\n"
-  usage
-  exit 1
 elif [ "$INTERACTIVE" = true ] || [ "$DETACH" = true ] && [ "$PURGE" = true ]; then
   printf -- "--purge: option must be used alone\n"
+  usage
+  exit 1
+elif [ "$INTERACTIVE" = true ] && [ "$DETACH" = true ]; then
+  printf -- "--interactive --detach: options must be used separately\n"
   usage
   exit 1
 elif [ "$PURGE" = true ]; then
