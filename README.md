@@ -9,10 +9,8 @@ try to find a solution to knwon which domain are contacted
 
 ## Purpose
 
-
-## Description
-
-Reference: https://github.com/StevenBlack/hosts
+This repository provides an easy way to generate host files from [StevenBlack's hosts repository](https://github.com/StevenBlack/hosts).  
+StevenBlack's hosts repository consolidates several reputable hosts files, and merges them into a unified hosts file with duplicates removed. A variety of tailored hosts files are provided.
 
 ## Prerequisites
 
@@ -20,6 +18,8 @@ Reference: https://github.com/StevenBlack/hosts
 * Docker Desktop 2.1.0.1 (37199) or later
 
 ## Usage
+
+
 
 ## How to block domains
 
@@ -128,20 +128,22 @@ log stream --predicate 'process == "mDNSResponder"' --info
 ```
 
 ```sh
-sudo log config --mode "private_data:on"
-log stream --predicate 'process == "mDNSResponder"' --info
+sudo log config --mode "private_data:off"
 ```
 
 ### How to reverse changes made to macOS system files
 
-The only file affected by this program is `/etc/hosts`
+The only file affected by these scripts is `/etc/hosts`. These scripts create a hard link between /etc/hosts and `$HARD_LINK_SRC_FILE` variable in env.list file.  
+The creation of this hard link will change the rights of the original file /etc/hosts because this hard link must be readable and writable by the current user without administrator rights.  
+If you need to reverse these changes, you need to run the following command on /etc/hosts.
 
-```
+```sh
 sudo chown root:wheel /etc/hosts
 ```
 
+**Note:** The following outout is status the of files related to the hosts file before changes.
 ```
-ls /etc/hosts*
+ls -l /etc/hosts*
 -rw-r--r--  1 root          wheel      213 24 jul 19:25 /etc/hosts
 -rw-r--r--  1 root          wheel      213 24 jul 19:25 /etc/hosts.bk
 -rw-r--r--  1 root          wheel        0 17 aoû  2018 /etc/hosts.equiv
