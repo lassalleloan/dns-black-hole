@@ -4,8 +4,9 @@ Author: Loan Lassalle
 ***
 
 ## TODO
-Readme - .example files, ref to StevenBlack repo
-try to find a solution to knwon which domain are contacted
+* How to use these scripts and this Docker container
+* How to work with .example files
+* How to know the domains contacted during web browsing (macOS logs)
 
 ## Purpose
 
