@@ -171,7 +171,7 @@ manually flush your DNS cache once the new hosts file is in place.
 Open a Terminal and run:
 
 ```
-sudo dscacheutil -flushcache;sudo killall -HUP mDNSResponder
+killall -HUP mDNSResponder
 ```
 
 ## Miscellaneous
@@ -182,7 +182,10 @@ sudo dscacheutil -flushcache;sudo killall -HUP mDNSResponder
 
 ```sh
 sudo log config --mode "private_data:on"
-log stream --predicate 'process == "mDNSResponder"' --info
+```
+
+```sh
+log stream --predicate 'process == "mDNSResponder"' --info | sed -En 's/^.*GetServerForQuestion.*for (([a-zA-Z0-9_-]+:\/\/)?(([a-zA-Z0-9_-]+[.])*)([a-zA-Z0-9_-]+[.][a-zA-Z0-9_-]+))[.] \((AAAA|Addr)\)$/\1/w dns-request-log'
 ```
 
 ```sh
