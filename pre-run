@@ -48,7 +48,7 @@ check_updates() {
 
   if [ "$verbosity" -eq 2 ]; then
     printf "Current version: %*s\n" 12 "$current_version"
-    printf "New version: %*s\n" 12 "$new_version"
+    printf "New version: %*s\n" 16 "$new_version"
   fi
 
   if [ ! -f src/hosts ] || [ ! -s src/hosts ] || [ "$current_version" \< "$new_version" ]; then
