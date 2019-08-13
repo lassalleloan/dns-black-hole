@@ -4,7 +4,7 @@
 #
 # Process executed after application manager execution
 #
-# author: Loan Lassalle <https://github.com/lassalleloan>
+# Author: Loan Lassalle <https://github.com/lassalleloan>
 
 # Source file for creating hard link
 HARD_LINK_SRC_FILE="$(sed -En 's/^# HARD_LINK_SRC_FILE=([^ #]+)/\1/p' env.list)"

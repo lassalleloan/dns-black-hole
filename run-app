@@ -4,7 +4,7 @@
 #
 # Manage the dns-black-hole app
 #
-# author: Loan Lassalle <https://github.com/lassalleloan>
+# Author: Loan Lassalle <https://github.com/lassalleloan>
 
 # Image tag and container name
 IMAGE_TAG="dns-black-hole"
