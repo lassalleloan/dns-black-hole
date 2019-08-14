@@ -1,3 +1,5 @@
+agent/stdout
+agent/stderr
 backup/hosts.bk
 src/hosts
 src/myhosts
