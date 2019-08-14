@@ -1,3 +1,4 @@
+agent/com.loanlassalle.dns-black-hole.update.plist
 agent/stdout
 agent/stderr
 backup/hosts.bk
