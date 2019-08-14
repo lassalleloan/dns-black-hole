@@ -4,7 +4,14 @@ Author: Loan Lassalle
 ***
 
 ## TODO
-* How to know the domains contacted during web browsing (macOS logs)
+* How to schedule the update of the hosts file
+   * Script stopped before all operations
+   * hosts file is not write
+* How to know the domains contacted during web browsing
+   * Create a script (?)
+   * Add datetime section (10 minutes)
+   * Add website section
+   * Divided logs by website or and datetime
 
 ## Purpose
 
