@@ -1,0 +1,15 @@
+#!/bin/sh -u
+# -u: Treat unset variables as an error when performing parameter expansion.
+# If expansion is attempted on an unset interactive, exits with a non-zero status.
+#
+# Set the launch agent for dns-black-hole update
+#
+# Author: Loan Lassalle <https://github.com/lassalleloan>
+
+mkdir -p ~/Library/LaunchAgents
+cp ~/Repositories/dns-black-hole/agent/com.loanlassalle.dns-black-hole.update.plist ~/Library/LaunchAgents
+launchctl load ~/Library/LaunchAgents/com.loanlassalle.dns-black-hole.update.plist
+launchctl start com.loanlassalle.dns-black-hole.update
+# launchctl stop com.loanlassalle.dns-black-hole.update
+# launchctl unload ~/Library/LaunchAgents/com.loanlassalle.dns-black-hole.update.plist
+# rm -rf ~/Library/LaunchAgents
