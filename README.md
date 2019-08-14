@@ -178,6 +178,16 @@ killall -HUP mDNSResponder
 
 =========================== **Work in progress** ===========================
 
+### How to schedule the update of the hosts file
+
+
+
+#### References
+* [Apple - Daemons and Services Programming Guide](https://developer.apple.com/library/archive/documentation/MacOSX/Conceptual/BPSystemStartup/Chapters/CreatingLaunchdJobs.html)
+* [man page launchd(8)](https://www.manpagez.com/man/8/launchd/)
+* [man page launchd.plist(5)](https://www.manpagez.com/man/5/launchd.plist/)
+* [A launchd Tutorial](https://www.launchd.info)
+
 ### How to know the domains contacted during web browsing
 
 ```sh
@@ -192,15 +202,20 @@ log stream --predicate 'process == "mDNSResponder"' --info | sed -En 's/^.*GetSe
 sudo log config --mode "private_data:off"
 ```
 
+#### References
+* [Logging DNS requests with internet sharing on macOS](https://www.sjoerdlangkemper.nl/2019/05/22/logging-dns-requests-with-internet-sharing-on-macos/)
+
 =========================== **Work in progress** ===========================
 
 ### How to reverse changes made to macOS system files
 
 The only file affected by the scripts is `/etc/hosts`. The scripts create a hard link between /etc/hosts and `$HARD_LINK_SRC_FILE` variable in env.list file.  
 The creation of this hard link will change the rights of the original file /etc/hosts because this hard link must be readable and writable by the current user without administrator rights.  
-If you need to reverse these changes, you need to run the following command on /etc/hosts.
+If you need to reverse these changes, you need to run following commands on /etc/hosts.
 
 ```sh
+rm dns-black-hole/src/hosts
+sudo cp -f dns-black-hole/backup/hosts.bk /etc/hosts
 sudo chown root:wheel /etc/hosts
 ```
 
