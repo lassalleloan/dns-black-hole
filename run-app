@@ -262,53 +262,19 @@ remove_all() {
   fi
 
   # Stop all containers
-  if [ "$verbosity" -eq 2 ]; then
-    docker stop "$(docker ps --all --quiet)"
-  else
-    docker stop "$(docker ps --all --quiet)" >/dev/null 2>&1
-  fi
+  stop_container "$(docker ps --all --quiet)" "$verbosity"
 
   # Kill all containers
-  if [ "$verbosity" -eq 2 ]; then
-    docker kill "$(docker ps --all --quiet)"
-  else
-    docker kill "$(docker ps --all --quiet)" >/dev/null 2>&1
-  fi
+  kill_container "$(docker ps --all --quiet)" "$verbosity"
 
   # Remove all containers
-  if [ "$verbosity" -eq 2 ]; then
-    docker rm --force --volumes "$(docker ps --all --quiet)"
-  else
-    docker rm --force --volumes "$(docker ps --all --quiet)" >/dev/null 2>&1
-  fi
-
-  # Remove all unused volumes
-  if [ "$verbosity" -eq 2 ]; then
-    docker volume prune --force
-  else
-    docker volume prune --force >/dev/null 2>&1
-  fi
+  remove_container "$(docker ps --all --quiet)" "$verbosity"
 
   # Remove all volumes
-  if [ "$verbosity" -eq 2 ]; then
-    docker volume rm --force "$(docker volume ls --quiet)"
-  else
-    docker volume rm --force "$(docker volume ls --quiet)" >/dev/null 2>&1
-  fi
-  
-  # Remove all unused images
-  if [ "$verbosity" -eq 2 ]; then
-    docker image prune --all --force
-  else
-    docker image prune --all --force >/dev/null 2>&1
-  fi
+  remove_volume "$(docker volume ls --quiet)" "$verbosity"
 
   # Remove all images
-  if [ "$verbosity" -eq 2 ]; then
-    docker image rm --force "$(docker image ls --all --quiet)"
-  else
-    docker image rm --force "$(docker image ls --all --quiet)" >/dev/null 2>&1
-  fi
+  remove_image "$(docker image ls --all --quiet)" "$verbosity"
 }
 
 # Check if it is an integer
