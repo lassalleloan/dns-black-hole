@@ -187,7 +187,7 @@ remove_container() {
   if [ "$verbosity" -eq 2 ]; then
     docker rm --volumes "$container_name"
   else
-    docker rm --volumes "$container_name" >/dev/null 2>&1
+    docker rm --force --volumes "$container_name" >/dev/null 2>&1
   fi
 }
 
@@ -203,7 +203,7 @@ remove_volume() {
   if [ "$verbosity" -eq 2 ]; then
     docker volume rm "$volume_name"
   else
-    docker volume rm "$volume_name" >/dev/null 2>&1
+    docker volume rm --force "$volume_name" >/dev/null 2>&1
   fi
 }
 
@@ -234,7 +234,7 @@ remove_image() {
   if [ "$verbosity" -eq 2 ]; then
     docker image rm "$image_name"
   else
-    docker image rm "$image_name" >/dev/null 2>&1
+    docker image rm --force "$image_name" >/dev/null 2>&1
   fi
 }
 
