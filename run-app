@@ -68,12 +68,12 @@ usage() {
   printf "  -h, --help                      Help on how to use this script\n"
 }
 
-# Start Docker application
+# Start Docker application if it was not running
 start_docker() {
   local verbosity="$1"
 
   if [ "$verbosity" -ne 0 ]; then
-    printf "Starting Docker application\n"
+    printf "Starting Docker application if it was not running\n"
   fi
 
   if docker info >/dev/null 2>&1; then
@@ -87,12 +87,12 @@ start_docker() {
   fi
 }
 
-# Stop Docker application
+# Stop Docker application if it was not running
 stop_docker() {
   local verbosity="$1"
 
   if [ "$verbosity" -ne 0 ]; then
-    printf "Stopping Docker application\n"
+    printf "Stopping Docker application if it was not running\n"
   fi
 
   if [ "$DOCKER_WAS_RUNNING" = false ]; then
@@ -416,7 +416,14 @@ elif [ "$INTERACTIVE" = true ] && [ -n "$VERBOSITY" ]; then
   usage
   exit 1
 elif [ "$PURGE" = true ]; then
+  # Start Docker application if it was not running
+  start_docker "$VERBOSITY"
+
   remove_all "$VERBOSITY"
+
+  # Stop Docker application if it was not running
+  stop_docker "$VERBOSITY"
+
   exit 0
 else
   if [ "$INTERACTIVE" = true ]; then
