@@ -440,12 +440,15 @@ else
     printf "Run script\n"
   fi
   
+  # Start Docker application if it was not running
   start_docker "$VERBOSITY"
 
+  # Build Docker container
   if ! build_container "$IMAGE_TAG" "$CONTAINER_NAME" "$VERBOSITY"; then
     exit 1
   fi
   
+  # Start Docker container
   if ! start_container "$IMAGE_TAG" "$CONTAINER_NAME" \
     "$SRC_VOLUME_1" "$DST_VOLUME_1" \
     "$SRC_VOLUME_2" "$DST_VOLUME_2" \
@@ -455,12 +458,14 @@ else
     exit 1
   fi
   
+  # Remove all related data to this container
   stop_container "$CONTAINER_NAME" "$VERBOSITY"
   kill_container "$CONTAINER_NAME" "$VERBOSITY"
   remove_container "$CONTAINER_NAME" "$VERBOSITY"
   remove_volumes_unused "$VERBOSITY"
   remove_images_unused "$VERBOSITY"
 
+  # Stop Docker application if it was not running
   stop_docker "$VERBOSITY"
 
   # Post-run script
