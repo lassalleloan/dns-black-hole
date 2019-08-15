@@ -247,9 +247,9 @@ remove_images_unused() {
   fi
 
   if [ "$verbosity" -eq 2 ]; then
-    docker image prune
+    docker image prune --all
   else
-    docker image prune --force >/dev/null 2>&1
+    docker image prune --all --force >/dev/null 2>&1
   fi
 }
 
@@ -436,7 +436,7 @@ else
     "$INTERACTIVE" "$VERBOSITY"; then
     exit 1
   fi
-
+  
   stop_container "$CONTAINER_NAME" "$VERBOSITY"
   kill_container "$CONTAINER_NAME" "$VERBOSITY"
   remove_container "$CONTAINER_NAME" "$VERBOSITY"
