@@ -253,6 +253,21 @@ remove_images_unused() {
   fi
 }
 
+# Remove all unused Docker data
+remove_all_unused() {
+  local verbosity="$1"
+
+  if [ "$verbosity" -ne 0 ]; then
+    printf "Removing all unused Docker data\n"
+  fi
+
+  if [ "$verbosity" -eq 2 ]; then
+    docker system prune --all --volumes
+  else
+    docker system prune --all --force --volumes >/dev/null 2>&1
+  fi
+}
+
 # Remove all Docker data
 remove_all() {
   local verbosity="$1"
