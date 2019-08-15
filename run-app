@@ -392,17 +392,17 @@ else
     banner
   fi
 
-  # Pre-run
+  # Pre-run script
   if [ "$FORCE" = false ]; then
     if ! sh pre-run -v "$VERBOSITY"; then
       exit 0
     fi
   fi
 
-  # Run
+  # Run script
   if [ "$VERBOSITY" -ne 0 ]; then
     printf "\n"
-    printf "Run\n"
+    printf "Run script\n"
   fi
   
   if ! build_container "$IMAGE_TAG" "$CONTAINER_NAME" "$VERBOSITY"; then
@@ -424,6 +424,6 @@ else
   remove_volumes_unused "$VERBOSITY"
   remove_images_unused "$VERBOSITY"
 
-  # Post-run
+  # Post-run script
   sh post-run -v "$VERBOSITY"
 fi
