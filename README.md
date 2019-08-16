@@ -4,8 +4,6 @@ Author: Loan Lassalle
 ***
 
 ## TODO
-* How to know the domains contacted during web browsing
-   * Add datetime section (~10 minutes)
 * How to schedule the update of the hosts file
    * Script stopped before all operations
    * hosts file is not writing
