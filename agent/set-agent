@@ -6,10 +6,11 @@
 #
 # Author: Loan Lassalle <https://github.com/lassalleloan>
 
-# Source directory for agent
-AGENT_SRC_DIRECTORY="$(sed -En 's/^# AGENT_SRC_DIRECTORY=([^ #]+)/\1/p' env.list)"
+# Working directory
+WORKING_DIRECTORY="$(sed -En 's/^# WORKING_DIRECTORY=([^ #]+)/\1/p' env.list)"
 
 mkdir -p ~/Library/LaunchAgents
-cp "$AGENT_SRC_DIRECTORY"/com.loanlassalle.dns-black-hole.update.plist ~/Library/LaunchAgents
+
+cp "$WORKING_DIRECTORY"/agent/com.loanlassalle.dns-black-hole.update.plist ~/Library/LaunchAgents
 launchctl load ~/Library/LaunchAgents/com.loanlassalle.dns-black-hole.update.plist > /dev/null 2>&1
 launchctl start com.loanlassalle.dns-black-hole.update > /dev/null 2>&1
