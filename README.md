@@ -124,7 +124,7 @@ Then, you can use the replace function of your text editor to add # at the begin
 After these changes, you must flush your DNS cache. To do this, you must execute the following commands in a terminal. These commands only works on a macOS.
 
 ```sh
-dscacheutil -flushcache; killall -HUP mDNSResponder
+killall -HUP mDNSResponder
 ```
 
 **Note:** It may be necessary to close all the tabs of your web browsers accessing this domain and its subdomains. In addition, some web browsers need to be restarted to clear their local DNS cache.
