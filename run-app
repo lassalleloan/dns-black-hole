@@ -6,7 +6,7 @@
 #
 # Author: Loan Lassalle <https://github.com/lassalleloan>
 
-# Start Docker application if it was not running
+# Start Docker application
 DOCKER_WAS_RUNNING=false
 
 # Image tag and container name
@@ -68,12 +68,12 @@ usage() {
   printf "  -h, --help                      Help on how to use this script\n"
 }
 
-# Start Docker application if it was not running
+# Start Docker application
 start_docker() {
   local verbosity="$1"
 
   if [ "$verbosity" -ne 0 ]; then
-    printf "Starting Docker application if it was not running\n"
+    printf "Starting Docker application\n"
   fi
 
   if docker info >/dev/null 2>&1; then
@@ -87,12 +87,12 @@ start_docker() {
   fi
 }
 
-# Stop Docker application if it was not running
+# Stop Docker application
 stop_docker() {
   local verbosity="$1"
 
   if [ "$verbosity" -ne 0 ]; then
-    printf "Stopping Docker application if it was not running\n"
+    printf "Stopping Docker application\n"
   fi
 
   if [ "$DOCKER_WAS_RUNNING" = false ]; then
@@ -416,12 +416,12 @@ elif [ "$INTERACTIVE" = true ] && [ -n "$VERBOSITY" ]; then
   usage
   exit 1
 elif [ "$PURGE" = true ]; then
-  # Start Docker application if it was not running
+  # Start Docker application
   start_docker "$VERBOSITY"
 
   remove_all "$VERBOSITY"
 
-  # Stop Docker application if it was not running
+  # Stop Docker application
   stop_docker "$VERBOSITY"
 
   exit 0
@@ -447,7 +447,7 @@ else
     printf "Run script\n"
   fi
   
-  # Start Docker application if it was not running
+  # Start Docker application
   start_docker "$VERBOSITY"
 
   # Build Docker container
@@ -472,7 +472,7 @@ else
   remove_volumes_unused "$VERBOSITY"
   remove_images_unused "$VERBOSITY"
 
-  # Stop Docker application if it was not running
+  # Stop Docker application
   stop_docker "$VERBOSITY"
 
   # Post-run script
