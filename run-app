@@ -13,18 +13,21 @@ DOCKER_WAS_RUNNING=false
 IMAGE_TAG="dns-black-hole"
 CONTAINER_NAME="$IMAGE_TAG"
 
+# Working directory
+WORKING_DIRECTORY="$(sed -En 's/^# WORKING_DIRECTORY=([^ #]+)/\1/p' env.list)"
+
 # Source and destination directories for the Docker container"s volume
-SRC_VOLUME_1="$(sed -En 's/^# SRC_VOLUME_1=([^ #]+)/\1/p' env.list)"
-DST_VOLUME_1="$(sed -En 's/^# DST_VOLUME_1=([^ #]+)/\1/p' env.list)"
+SRC_VOLUME_1="$WORKING_DIRECTORY/src/hosts"
+DST_VOLUME_1="/dns-black-hole/etc/hosts"
 
-SRC_VOLUME_2="$(sed -En 's/^# SRC_VOLUME_2=([^ #]+)/\1/p' env.list)"
-DST_VOLUME_2="$(sed -En 's/^# DST_VOLUME_2=([^ #]+)/\1/p' env.list)"
+SRC_VOLUME_2="$WORKING_DIRECTORY/src/blacklist"
+DST_VOLUME_2="/dns-black-hole/hosts-master/blacklist"
 
-SRC_VOLUME_3="$(sed -En 's/^# SRC_VOLUME_3=([^ #]+)/\1/p' env.list)"
-DST_VOLUME_3="$(sed -En 's/^# DST_VOLUME_3=([^ #]+)/\1/p' env.list)"
+SRC_VOLUME_3="$WORKING_DIRECTORY/src/whitelist"
+DST_VOLUME_3="/dns-black-hole/hosts-master/whitelist"
 
-SRC_VOLUME_4="$(sed -En 's/^# SRC_VOLUME_4=([^ #]+)/\1/p' env.list)"
-DST_VOLUME_4="$(sed -En 's/^# DST_VOLUME_4=([^ #]+)/\1/p' env.list)"
+SRC_VOLUME_4="$WORKING_DIRECTORY/src/myhosts"
+DST_VOLUME_4="/dns-black-hole/hosts-master/myhosts"
 
 # Processing mode (default: detach)
 INTERACTIVE=false

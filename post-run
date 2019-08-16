@@ -6,8 +6,11 @@
 #
 # Author: Loan Lassalle <https://github.com/lassalleloan>
 
+# Working directory
+WORKING_DIRECTORY="$(sed -En 's/^# WORKING_DIRECTORY=([^ #]+)/\1/p' env.list)"
+
 # Source file for creating hard link
-HARD_LINK_SRC_FILE="$(sed -En 's/^# HARD_LINK_SRC_FILE=([^ #]+)/\1/p' env.list)"
+HARD_LINK_SRC_FILE="$WORKING_DIRECTORY/src/hosts"
 
 # Default verbosity level
 VERBOSITY="$(sed -En 's/^# VERBOSITY=([0-9]([.][0-9]*)*)$/\1/p' env.list)"
