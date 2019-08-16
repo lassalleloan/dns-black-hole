@@ -4,6 +4,8 @@ Author: Loan Lassalle
 ***
 
 ## TODO
+* How to know domains contacted while web browsing
+   * Check sed function - create file options
 * How to schedule the update of the hosts file
    * Script stopped before all operations
    * hosts file is not writing
@@ -53,7 +55,7 @@ Here are the steps of `run-app` script:
    5. Remove Docker volumes unsued
    6. Remove Docker images unsued
 3. Running `post-run` script
-   1. Creation of hard link between /etc/hosts and $HARD_LINK_SRC_FILE (variable in env.list file)
+   1. Creation of hard link between /etc/hosts and `$WORKING_DIRECTORY`/dns-black-hole/src/hosts (variable in env.list file)
    2. Flushing of local DNS cache
 
 **Note:** `pre-run` and `post-run` scripts are present to allow you to add processes before and after the hosts file is generated.
@@ -211,7 +213,7 @@ sudo log config --mode "private_data:off"
 
 ### How to reverse changes made to macOS system files
 
-The only file affected by scripts is /etc/hosts. They create a hard link between /etc/hosts and `$HARD_LINK_SRC_FILE` variable in env.list file.  
+The only file affected by scripts is /etc/hosts. They create a hard link between /etc/hosts and `$WORKING_DIRECTORY`/dns-black-hole/src/hosts variable in env.list file.  
 The creation of this hard link will change rights of the original file /etc/hosts because this hard link must be readable and writable by the current user without administrator rights.  
 If you need to reverse these changes, you need to run following commands on /etc/hosts.
 
