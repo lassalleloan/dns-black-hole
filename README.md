@@ -4,21 +4,18 @@ Author: Loan Lassalle
 ***
 
 ## TODO
+* How to know the domains contacted during web browsing
+   * Add datetime section (~10 minutes)
 * How to schedule the update of the hosts file
    * Script stopped before all operations
-   * hosts file is not write
-* How to know the domains contacted during web browsing
-   * Create a script (?)
-   * Add datetime section (10 minutes)
-   * Add website section
-   * Divided logs by website or and datetime
+   * hosts file is not writing
 
 ## Purpose
 
 This repository provides an easy way to generate host files from [StevenBlack's hosts repository](https://github.com/StevenBlack/hosts).  
 StevenBlack's hosts repository consolidates several reputable hosts files, and merges them into a unified hosts file with duplicates removed. A variety of tailored hosts files are provided.
 
-If you need more details or explanations about this repository, feel free to explore the source code of this repository and read [StevenBlack's hosts repository](https://github.com/StevenBlack/hosts).
+If you need more details or explanations about this repository, feel free to explore source code of this repository and read [StevenBlack's hosts repository](https://github.com/StevenBlack/hosts).
 
 ## Prerequisites
 
@@ -108,14 +105,14 @@ The whitelist is not tracked by git, so any changes you make won't be overridden
 
 ## How to temporarily unblock DNS requests for a specific domain
 
-To temporarily unblock DNS requests for a specific domain, it is recommended to comment all lines related to that specific domain in the hosts file. To do this, you must add a hashtag or # at the beginning of the lines.  
+To temporarily unblock DNS requests for a specific domain, it is recommended to comment all lines related to that specific domain in the hosts file. To do this, you must add a hashtag or # at the beginning of lines.  
 Due to multiple subdomains for a specific domain, you can use the following regex to find a domain and all its subdomains.
 
 ```regex
 ^(0[.]0[.]0[.]0 ([a-zA-Z0-9_-]+:\/\/)?(([a-zA-Z0-9_-]+[.])*)(reddit[.][a-zA-Z0-9_-]+))$
 ```
 
-Then, you can use the replace function of your text editor to add # at the beginning of the lines using the previous regex and the next string.
+Then, you can use the replace function of your text editor to add # at the beginning of lines using the previous regex and the next string.
 
 ```replace-text
 # $1
@@ -127,15 +124,15 @@ After these changes, you must flush your DNS cache. To do this, you must execute
 killall -HUP mDNSResponder
 ```
 
-**Note:** It may be necessary to close all the tabs of your web browsers accessing this domain and its subdomains. In addition, some web browsers need to be restarted to clear their local DNS cache.
+**Note:** It may be necessary to close all tabs of your web browsers accessing this domain and its subdomains. In addition, some web browsers need to be restarted to clear their local DNS cache.
 
-When you want to reverse previous actions and block DNS requests for a specific domain and subdomains, simply use the following regex to remove the hashtag or # at the beginning of the lines.
+When you want to reverse previous actions and block DNS requests for a specific domain and subdomains, simply use the following regex to remove the hashtag or # at the beginning of lines.
 
 ```regex
 ^# (0[.]0[.]0[.]0 ([a-zA-Z0-9_-]+:\/\/)?(([a-zA-Z0-9_-]+[.])*)(reddit[.][a-zA-Z0-9_-]+))$
 ```
 
-Then, you can use the replace function of your text editor to remove # at the beginning of the lines using the previous regex and the next string.
+Then, you can use the replace function of your text editor to remove # at the beginning of lines using the previous regex and the next string.
 
 ```replace-text
 $1
@@ -147,7 +144,7 @@ After these changes, you must flush your DNS cache. To do this, you must execute
 killall -HUP mDNSResponder
 ```
 
-**Note:** It may be necessary to close all the tabs of your web browsers accessing this domain and its subdomains. In addition, some web browsers need to be restarted to clear their local DNS cache.
+**Note:** It may be necessary to close all tabs of your web browsers accessing this domain and its subdomains. In addition, some web browsers need to be restarted to clear their local DNS cache.
 
 ### Domains associated with a string
 
@@ -167,8 +164,7 @@ macOS: /etc/hosts file.
 
 ## Reloading hosts file
 
-Your operating system will cache DNS lookups. You can either reboot or run the following commands to
-manually flush your DNS cache once the new hosts file is in place.
+Your operating system will cache DNS lookups. You can either reboot or run the following commands to manually flush your DNS cache once the new hosts file is in place.
 
 | The Google Chrome browser may require manually cleaning up its DNS Cache on `chrome://net-internals/#dns` page to thereafter see the changes in your hosts file. See: https://superuser.com/questions/723703
 :-----------------------------------------------------------------------------------------
@@ -189,35 +185,36 @@ killall -HUP mDNSResponder
 
 
 
-#### References
-* [Apple - Daemons and Services Programming Guide](https://developer.apple.com/library/archive/documentation/MacOSX/Conceptual/BPSystemStartup/Chapters/CreatingLaunchdJobs.html)
-* [man page launchd(8)](https://www.manpagez.com/man/8/launchd/)
-* [man page launchd.plist(5)](https://www.manpagez.com/man/5/launchd.plist/)
-* [A launchd Tutorial](https://www.launchd.info)
+=========================== **Work in progress** ===========================
 
-### How to know the domains contacted during web browsing
+### How to know domains contacted while web browsing
+
+It may be interesting for you to add other domains that are contacted during your web browsing. The first solution is to inspect Web page elements and retrieve contacted domains. To know how to do it, [let me Google that for you](https://lmgtfy.com/?q=inspect+web+page+elements).
+
+The second solution consists to extract domains from DNS logs. The first thing to do is to enable the showing of private data. Since DNS queries may be sensitive, these are hidden by default.
 
 ```sh
 sudo log config --mode "private_data:on"
 ```
 
+Then, you can extract domains contacted while web browsing from logs. To do this, you can use the following command. This command streams information log data from mDNSResponder process, extract domains and save to dns-request-log file.
+
 ```sh
-log stream --predicate 'process == "mDNSResponder"' --info | sed -En 's/^.*GetServerForQuestion.*for (([a-zA-Z0-9_-]+:\/\/)?(([a-zA-Z0-9_-]+[.])*)([a-zA-Z0-9_-]+[.][a-zA-Z0-9_-]+))[.] \((AAAA|Addr)\)$/\1/w dns-request-log'
+log stream --level info --process mDNSResponder --type log | sed -En 's/^.*GetServerForQuestion.*for (([a-zA-Z0-9_-]+:\/\/)?(([a-zA-Z0-9_-]+[.])*)([a-zA-Z0-9_-]+[.][a-zA-Z0-9_-]+))[.] \((AAAA|Addr)\)$/\1/w dns-request-log'
 ```
+
+When you want to stop the domains extraction, you just need to stop the command with interruption signal or `CTRL + C` and disable the showing of private data with the follwoing command.
 
 ```sh
 sudo log config --mode "private_data:off"
 ```
 
-#### References
-* [Logging DNS requests with internet sharing on macOS](https://www.sjoerdlangkemper.nl/2019/05/22/logging-dns-requests-with-internet-sharing-on-macos/)
-
-=========================== **Work in progress** ===========================
+**Note:** All the above commands must be executed by a user account with administrator rights.
 
 ### How to reverse changes made to macOS system files
 
-The only file affected by the scripts is `/etc/hosts`. The scripts create a hard link between /etc/hosts and `$HARD_LINK_SRC_FILE` variable in env.list file.  
-The creation of this hard link will change the rights of the original file /etc/hosts because this hard link must be readable and writable by the current user without administrator rights.  
+The only file affected by scripts is /etc/hosts. They create a hard link between /etc/hosts and `$HARD_LINK_SRC_FILE` variable in env.list file.  
+The creation of this hard link will change rights of the original file /etc/hosts because this hard link must be readable and writable by the current user without administrator rights.  
 If you need to reverse these changes, you need to run following commands on /etc/hosts.
 
 ```sh
@@ -234,3 +231,12 @@ ls -l /etc/hosts*
 -rw-r--r--  1 root          wheel        0 17 aoû  2018 /etc/hosts.equiv
 -rw-r--r--  1 root          wheel      213 17 aoû  2018 /etc/hosts~orig
 ```
+
+### References
+
+* [StevenBlack's hosts repository](https://github.com/StevenBlack/hosts)
+* [Apple - Daemons and Services Programming Guide](https://developer.apple.com/library/archive/documentation/MacOSX/Conceptual/BPSystemStartup/Chapters/CreatingLaunchdJobs.html)
+* [man page launchd(8)](https://www.manpagez.com/man/8/launchd/)
+* [man page launchd.plist(5)](https://www.manpagez.com/man/5/launchd.plist/)
+* [A launchd Tutorial](https://www.launchd.info)
+* [Logging DNS requests with internet sharing on macOS](https://www.sjoerdlangkemper.nl/2019/05/22/logging-dns-requests-with-internet-sharing-on-macos/)
