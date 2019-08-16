@@ -45,7 +45,7 @@ check_updates() {
 
   # Retrieve the version number
   new_version="$(curl --silent https://raw.githubusercontent.com/StevenBlack/hosts/master/package.json | \
-    sed -En 's/^ *"version": *"([0-9]([.][0-9]*)*)",$/\1/p')"
+    sed -En 's/^[ ]*"version": "([0-9]([.][0-9]*)*)",$/\1/p')"
 
   if [ "$verbosity" -eq 2 ]; then
     printf "Current version: %*s\n" 12 "$current_version"
@@ -55,7 +55,7 @@ check_updates() {
   if [ ! -f src/hosts ] || [ ! -s src/hosts ] || [ "$current_version" \< "$new_version" ]; then
 
     # Edit CURRENT_VERSION variable in env.list file
-    sed -i '' -E "/^# CURRENT_VERSION=([0-9]([.][0-9]*)*)$/s/$current_version/$new_version/" env.list
+    sed -i '' -E "s/^# CURRENT_VERSION=$current_version$/# CURRENT_VERSION=$new_version/" env.list
   else
 
     # Stop all future process
