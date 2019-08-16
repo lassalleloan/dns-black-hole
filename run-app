@@ -13,7 +13,7 @@ DOCKER_WAS_RUNNING=false
 IMAGE_TAG="dns-black-hole"
 CONTAINER_NAME="$IMAGE_TAG"
 
-# Source and destination directories for the ocker container"s volume
+# Source and destination directories for the Docker container"s volume
 SRC_VOLUME_1="$(sed -En 's/^# SRC_VOLUME_1=([^ #]+)/\1/p' env.list)"
 DST_VOLUME_1="$(sed -En 's/^# DST_VOLUME_1=([^ #]+)/\1/p' env.list)"
 
