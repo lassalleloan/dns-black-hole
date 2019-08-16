@@ -11,5 +11,5 @@ AGENT_SRC_DIRECTORY="$(sed -En 's/^# AGENT_SRC_DIRECTORY=([^ #]+)/\1/p' env.list
 
 mkdir -p ~/Library/LaunchAgents
 cp "$AGENT_SRC_DIRECTORY"/com.loanlassalle.dns-black-hole.update.plist ~/Library/LaunchAgents
-launchctl load ~/Library/LaunchAgents/com.loanlassalle.dns-black-hole.update.plist
-launchctl start com.loanlassalle.dns-black-hole.update
+launchctl load ~/Library/LaunchAgents/com.loanlassalle.dns-black-hole.update.plist > /dev/null 2>&1
+launchctl start com.loanlassalle.dns-black-hole.update > /dev/null 2>&1

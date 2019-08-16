@@ -6,6 +6,6 @@
 #
 # Author: Loan Lassalle <https://github.com/lassalleloan>
 
-launchctl stop com.loanlassalle.dns-black-hole.update
-launchctl unload ~/Library/LaunchAgents/com.loanlassalle.dns-black-hole.update.plist
+launchctl stop com.loanlassalle.dns-black-hole.update > /dev/null 2>&1
+launchctl unload ~/Library/LaunchAgents/com.loanlassalle.dns-black-hole.update.plist > /dev/null 2>&1
 rm -rf ~/Library/LaunchAgents
