@@ -431,6 +431,7 @@ else
 
   # Pre-run script
   if [ "$FORCE" = false ]; then
+    printf "\n"
     if ! sh pre-run -v "$VERBOSITY"; then
       exit 0
     fi
@@ -471,5 +472,6 @@ else
   stop_docker "$VERBOSITY"
 
   # Post-run script
+  printf "\n"
   sh post-run -v "$VERBOSITY"
 fi

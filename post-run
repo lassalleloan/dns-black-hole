@@ -17,7 +17,6 @@ VERBOSITY="$(sed -En 's/^# VERBOSITY=([0-9]([.][0-9]*)*)$/\1/p' env.list)"
 
 # Display a banner
 banner() {
-  printf "\n"
   printf "Post-run script\n"
 }
 
