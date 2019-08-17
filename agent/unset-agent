@@ -2,10 +2,155 @@
 # -u: Treat unset variables as an error when performing parameter expansion.
 # If expansion is attempted on an unset interactive, exits with a non-zero status.
 #
-# Set the launch agent for dns-black-hole update
+# Unset the dns-black-hole update agent
 #
 # Author: Loan Lassalle <https://github.com/lassalleloan>
 
-launchctl stop com.loanlassalle.dns-black-hole.update > /dev/null 2>&1
-launchctl unload ~/Library/LaunchAgents/com.loanlassalle.dns-black-hole.update.plist > /dev/null 2>&1
-rm -rf ~/Library/LaunchAgents
+# Working directory
+WORKING_DIRECTORY="$(sed -En 's/^# WORKING_DIRECTORY=([^ #]+)/\1/p' env.list)"
+
+# Default verbosity level
+VERBOSITY="$(sed -En 's/^# VERBOSITY=([0-9]([.][0-9]*)*)$/\1/p' env.list)"
+
+# Display a banner
+banner() {
+  printf "Unset-agent script\n"
+}
+
+# Usage of the script
+usage() {
+  printf "Usage: unset-agent [--verbosity (0 | 1 | 2)]\n"
+  printf "\n"
+  printf "Unset the dns-black-hole update agent\n"
+  printf "\n"
+  printf "Version: 1.0.0, build deadbeef\n"
+  printf "\n"
+  printf "Author:\n"
+  printf "  Loan Lassalle - <https://github.com/lassalleloan>\n"
+  printf "\n"
+  printf "Options:\n"
+  printf "  -v, --verbosity (0 | 1 | 2)     Level of verbosity: no ouput, step information, interactive\n"
+  printf "  -h, --help                      Help on how to use this script\n"
+}
+
+# Stop the agent
+stop_agent() {
+  local verbosity="$1"
+
+  if [ "$verbosity" -ne 0 ]; then
+    printf "Stopping the agent\n"
+  fi
+
+  if [ "$verbosity" -eq 2 ]; then
+    launchctl stop com.loanlassalle.dns-black-hole.update
+  else
+    launchctl stop com.loanlassalle.dns-black-hole.update > /dev/null 2>&1
+  fi
+}
+
+# Unload the plist file
+unload_plist() {
+  local verbosity="$1"
+
+  if [ "$verbosity" -ne 0 ]; then
+    printf "Stopping the agent\n"
+  fi
+
+  # Stops and unloads and disables the job.
+  # The job will NOT restart on the next login/restart.
+  if [ "$verbosity" -eq 2 ]; then
+    launchctl unload -w ~/Library/LaunchAgents/com.loanlassalle.dns-black-hole.update.plist
+  else
+    launchctl unload -w ~/Library/LaunchAgents/com.loanlassalle.dns-black-hole.update.plist > /dev/null 2>&1
+  fi
+}
+
+# Remove the plist file
+remove_plist() {
+  local verbosity="$1"
+
+  if [ "$verbosity" -ne 0 ]; then
+    printf "Removing the plist file\n"
+  fi
+
+  if [ "$verbosity" -eq 2 ]; then
+    rm -r "$WORKING_DIRECTORY/agent/com.loanlassalle.dns-black-hole.update.plist"
+    file_count="$(find ~/Library/LaunchAgents -type f | wc -l | sed -E 's/( )+//g')"
+
+    if [ "$file_count" -eq 1 ]; then
+      rm -r ~/Library/LaunchAgents
+    else
+      rm -r ~/Library/LaunchAgents/com.loanlassalle.dns-black-hole.update.plist
+    fi
+  else
+    rm -rf "$WORKING_DIRECTORY/agent/com.loanlassalle.dns-black-hole.update.plist" > /dev/null 2>&1
+    file_count="$(find ~/Library/LaunchAgents -type f 2> /dev/null | wc -l | sed -E 's/( )+//g')"
+
+    if [ "$file_count" -eq 1 ]; then
+      rm -rf ~/Library/LaunchAgents > /dev/null 2>&1
+    else
+      rm -rf ~/Library/LaunchAgents/com.loanlassalle.dns-black-hole.update.plist > /dev/null 2>&1
+    fi
+  fi
+
+  file_count="$(find ~/Library/LaunchAgents -type f 2> /dev/null | wc -l | sed -E 's/( )+//g')"
+}
+
+# Check if it is an integer
+exit_if_not_integer() {
+  local variable="$1"
+
+  if ! echo "$variable" | grep -Eq  "^[0-9]{1}$"; then
+    printf "%s: not a integer\n" "$variable"
+    usage
+    exit 1
+  fi
+}
+
+# Main
+for arg in "$@"; do
+  shift
+  case "$arg" in
+    "--verbosity")
+      set -- "$@" "-v"
+      ;;
+    "--help")
+      set -- "$@" "-h"
+      ;;
+    "--"*)
+      set -- "$@" "-?"
+      ;;
+    *)
+      set -- "$@" "$arg"
+  esac
+done
+
+while getopts ":v:h" option; do
+  case $option in
+    v)
+      VERBOSITY=$OPTARG
+      exit_if_not_integer "$VERBOSITY"
+      ;;
+    h)
+      usage
+      exit
+      ;;
+    :)
+      printf "%s: argument required\n" "$OPTARG"
+      exit 1
+      ;;
+    \?)
+      printf "%s: invalid option\n" "$OPTARG"
+      usage
+      exit 1
+      ;;
+  esac
+done
+
+if [ "$VERBOSITY" -ne 0 ]; then
+  banner
+fi
+
+stop_agent "$VERBOSITY"
+unload_plist "$VERBOSITY"
+remove_plist "$VERBOSITY"

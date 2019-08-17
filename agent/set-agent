@@ -2,15 +2,148 @@
 # -u: Treat unset variables as an error when performing parameter expansion.
 # If expansion is attempted on an unset interactive, exits with a non-zero status.
 #
-# Set the launch agent for dns-black-hole update
+# Set the dns-black-hole update agent
 #
 # Author: Loan Lassalle <https://github.com/lassalleloan>
 
 # Working directory
 WORKING_DIRECTORY="$(sed -En 's/^# WORKING_DIRECTORY=([^ #]+)/\1/p' env.list)"
 
-mkdir -p ~/Library/LaunchAgents
+# Default verbosity level
+VERBOSITY="$(sed -En 's/^# VERBOSITY=([0-9]([.][0-9]*)*)$/\1/p' env.list)"
 
-cp "$WORKING_DIRECTORY/agent/com.loanlassalle.dns-black-hole.update.plist" ~/Library/LaunchAgents
-launchctl load ~/Library/LaunchAgents/com.loanlassalle.dns-black-hole.update.plist > /dev/null 2>&1
-launchctl start com.loanlassalle.dns-black-hole.update > /dev/null 2>&1
+# Display a banner
+banner() {
+  printf "Set-agent script\n"
+}
+
+# Usage of the script
+usage() {
+  printf "Usage: set-agent [--verbosity (0 | 1 | 2)]\n"
+  printf "\n"
+  printf "Set the dns-black-hole update agent\n"
+  printf "\n"
+  printf "Version: 1.0.0, build deadbeef\n"
+  printf "\n"
+  printf "Author:\n"
+  printf "  Loan Lassalle - <https://github.com/lassalleloan>\n"
+  printf "\n"
+  printf "Options:\n"
+  printf "  -v, --verbosity (0 | 1 | 2)     Level of verbosity: no ouput, step information, interactive\n"
+  printf "  -h, --help                      Help on how to use this script\n"
+}
+
+# Create the plist file
+create_plist() {
+  local verbosity="$1"
+
+  if [ "$verbosity" -ne 0 ]; then
+    printf "Creating the plist file\n"
+  fi
+
+  # Copy the plist.example file
+  if [ "$verbosity" -eq 2 ]; then
+    cp "$WORKING_DIRECTORY/agent/com.loanlassalle.dns-black-hole.update.plist.example" \
+      "$WORKING_DIRECTORY/agent/com.loanlassalle.dns-black-hole.update.plist"
+  else
+    cp "$WORKING_DIRECTORY/agent/com.loanlassalle.dns-black-hole.update.plist.example" \
+      "$WORKING_DIRECTORY/agent/com.loanlassalle.dns-black-hole.update.plist" > /dev/null 2>&1
+  fi
+
+  # Edit the working directory in plist file
+  sed -i '' -E "s|^        <string><absolute-path></string>$|        <string>$WORKING_DIRECTORY</string>|" \
+    "$WORKING_DIRECTORY/agent/com.loanlassalle.dns-black-hole.update.plist"
+}
+
+# Copy the plist file
+copy_plist() {
+  local verbosity="$1"
+
+  if [ "$verbosity" -ne 0 ]; then
+    printf "Copying the plist file\n"
+  fi
+
+  if [ "$verbosity" -eq 2 ]; then
+
+    # User-provided agent directory
+    mkdir -p ~/Library/LaunchAgents
+    cp "$WORKING_DIRECTORY/agent/com.loanlassalle.dns-black-hole.update.plist" ~/Library/LaunchAgents
+  else
+
+    # User-provided agent directory
+    mkdir -p ~/Library/LaunchAgents > /dev/null 2>&1
+    cp "$WORKING_DIRECTORY/agent/com.loanlassalle.dns-black-hole.update.plist" ~/Library/LaunchAgents > /dev/null 2>&1
+  fi
+}
+
+# Load the plist file
+load_plist() {
+  local verbosity="$1"
+
+  if [ "$verbosity" -ne 0 ]; then
+    printf "Loading the plist file\n"
+  fi
+
+  # Load the job while also marking the job as "not disabled".
+  # The job will restart on the next login/reboot.
+  launchctl load -w ~/Library/LaunchAgents/com.loanlassalle.dns-black-hole.update.plist > /dev/null 2>&1
+}
+
+# Check if it is an integer
+exit_if_not_integer() {
+  local variable="$1"
+
+  if ! echo "$variable" | grep -Eq  "^[0-9]{1}$"; then
+    printf "%s: not a integer\n" "$variable"
+    usage
+    exit 1
+  fi
+}
+
+# Main
+for arg in "$@"; do
+  shift
+  case "$arg" in
+    "--verbosity")
+      set -- "$@" "-v"
+      ;;
+    "--help")
+      set -- "$@" "-h"
+      ;;
+    "--"*)
+      set -- "$@" "-?"
+      ;;
+    *)
+      set -- "$@" "$arg"
+  esac
+done
+
+while getopts ":v:h" option; do
+  case $option in
+    v)
+      VERBOSITY=$OPTARG
+      exit_if_not_integer "$VERBOSITY"
+      ;;
+    h)
+      usage
+      exit
+      ;;
+    :)
+      printf "%s: argument required\n" "$OPTARG"
+      exit 1
+      ;;
+    \?)
+      printf "%s: invalid option\n" "$OPTARG"
+      usage
+      exit 1
+      ;;
+  esac
+done
+
+if [ "$VERBOSITY" -ne 0 ]; then
+  banner
+fi
+
+create_plist "$VERBOSITY"
+copy_plist "$VERBOSITY"
+load_plist "$VERBOSITY"
