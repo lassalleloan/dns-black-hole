@@ -155,11 +155,9 @@ start_container() {
   else
     if [ "$verbosity" -eq 2 ]; then
       docker run \
-        --interactive \
         --env-file env.list \
         --name "$container_name" \
         --rm \
-        --tty \
         --volume "$src_directory_1":"$dst_directory_1" \
         --volume "$src_directory_2":"$dst_directory_2" \
         --volume "$src_directory_3":"$dst_directory_3" \
@@ -167,11 +165,9 @@ start_container() {
         "$image_tag"
     else
       docker run \
-        --interactive \
         --env-file env.list \
         --name "$container_name" \
         --rm \
-        --tty \
         --volume "$src_directory_1":"$dst_directory_1" \
         --volume "$src_directory_2":"$dst_directory_2" \
         --volume "$src_directory_3":"$dst_directory_3" \
@@ -412,10 +408,6 @@ if { { [ "$INTERACTIVE" = true ] || [ "$DETACH" = true ]; } && [ "$PURGE" = true
   exit 1
 elif [ "$INTERACTIVE" = true ] || [ "$PURGE" = true ] && [ "$FORCE" = true ]; then
   printf -- "--force: option must be used with --detach option\n"
-  usage
-  exit 1
-elif [ "$INTERACTIVE" = true ] && [ -n "$VERBOSITY" ]; then
-  printf -- "--verbosity: option not must be used with --interactive option\n"
   usage
   exit 1
 elif [ "$PURGE" = true ]; then
