@@ -31,7 +31,7 @@ Author: Loan Lassalle <https://github.com/lassalleloan>
         <array>
             <dict>
                 <key>Weekday</key>
-                <integer>0</integer>
+                <integer>1</integer>
                 <key>Hour</key>
                 <integer>20</integer>
                 <key>Minute</key>
@@ -39,7 +39,7 @@ Author: Loan Lassalle <https://github.com/lassalleloan>
             </dict>
             <dict>
                 <key>Weekday</key>
-                <integer>3</integer>
+                <integer>4</integer>
                 <key>Hour</key>
                 <integer>20</integer>
                 <key>Minute</key>
