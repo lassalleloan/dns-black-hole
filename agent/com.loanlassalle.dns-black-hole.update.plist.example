@@ -11,7 +11,7 @@ Author: Loan Lassalle <https://github.com/lassalleloan>
 		<key>Label</key>
         <string>com.loanlassalle.dns-black-hole.update</string>
 
-        <!-- Absolute path for working directory must be configured -->
+        <!-- Absolute path must be configured -->
         <key>WorkingDirectory</key>
         <string><absolute-path></string>
         
@@ -26,8 +26,8 @@ Author: Loan Lassalle <https://github.com/lassalleloan>
             <string>agent/stdout</string>
             <key>StandardErrorPath</key>
             <string>agent/stderr</string>
-            <key>StartCalendarInterval</key>
         -->
+        <key>StartCalendarInterval</key>
         <array>
             <dict>
                 <key>Weekday</key>
