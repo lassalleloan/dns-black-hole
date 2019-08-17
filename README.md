@@ -3,13 +3,6 @@
 Author: Loan Lassalle
 ***
 
-## TODO
-* How to know domains contacted while web browsing
-   * Check sed function - create file options
-* How to schedule the update of the hosts file
-   * Script stopped before all operations
-   * hosts file is not writing
-
 ## Purpose
 
 This repository provides an easy way to generate host files from [StevenBlack's hosts repository](https://github.com/StevenBlack/hosts).  
