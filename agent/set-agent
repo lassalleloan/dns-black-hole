@@ -84,7 +84,7 @@ load_plist() {
     printf "Loading the plist file\n"
   fi
 
-  # Load the job while also marking the job as "not disabled".
+  # Load the job while also marking the job as "not disabled"
   # The job will restart on the next login/reboot.
   launchctl load -w ~/Library/LaunchAgents/com.loanlassalle.dns-black-hole.update.plist > /dev/null 2>&1
 }
