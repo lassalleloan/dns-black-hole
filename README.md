@@ -3,6 +3,11 @@
 Author: Loan Lassalle
 ***
 
+## TODO
+* Debug mode for all scripts
+* Automatisation of plist StartCalendarInterval section
+* Explanation of "How to schedule the update of the hosts file"
+
 ## Purpose
 
 This repository provides an easy way to generate host files from [StevenBlack's hosts repository](https://github.com/StevenBlack/hosts).  
@@ -176,7 +181,7 @@ killall -HUP mDNSResponder
 
 ### How to schedule the update of the hosts file
 
-
+It may be interesting for you  
 
 =========================== **Work in progress** ===========================
 
