@@ -11,7 +11,11 @@ Author: Loan Lassalle <https://github.com/lassalleloan>
 		<key>Label</key>
         <string>com.loanlassalle.dns-black-hole.update</string>
 
-        <!-- Absolute path must be configured -->
+        <!-- 
+            Absolute path must be configured
+            Concatenation between WORKING_DIRECTORY in env.list file and 
+            the path "/agent/com.loanlassalle.dns-black-hole.update.plist"
+        -->
         <key>WorkingDirectory</key>
         <string><absolute-path></string>
         
@@ -21,7 +25,8 @@ Author: Loan Lassalle <https://github.com/lassalleloan>
             <string>-u</string>
             <string>run-app</string>
         </array>
-        <!-- Optional outputs
+        <!-- 
+            Optional outputs
             <key>StandardOutPath</key>
             <string>agent/stdout</string>
             <key>StandardErrorPath</key>
