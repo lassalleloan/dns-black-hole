@@ -1,7 +1,7 @@
 <!--
-dns-black-hole update agent
+    dns-black-hole update agent
 
-Author: Loan Lassalle <https://github.com/lassalleloan>
+    Author: Loan Lassalle <https://github.com/lassalleloan>
 -->
 
 <?xml version="1.0" encoding="UTF-8"?>
@@ -26,11 +26,11 @@ Author: Loan Lassalle <https://github.com/lassalleloan>
             <string>run-app</string>
         </array>
         <!-- 
-            Optional outputs
-            <key>StandardOutPath</key>
-            <string>agent/stdout</string>
-            <key>StandardErrorPath</key>
-            <string>agent/stderr</string>
+        Optional outputs
+        <key>StandardOutPath</key>
+        <string>agent/stdout</string>
+        <key>StandardErrorPath</key>
+        <string>agent/stderr</string>
         -->
         <key>StartCalendarInterval</key>
         <array>
