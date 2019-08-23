@@ -53,6 +53,14 @@ create_plist() {
   # Edit the working directory in plist file
   sed -i '' -E "s|^        <string><absolute-path></string>$|        <string>$WORKING_DIRECTORY</string>|" \
     "$WORKING_DIRECTORY/agent/com.loanlassalle.dns-black-hole.update.plist"
+
+  if [ "$verbosity" -eq 2 ]; then
+    # sed -i '' -E "s|^\s*<!--\s*\n\s*Optional outputs\n(\s*<key>StandardOutPath</key>\n\s*<string>.*</string>\n\s*<key>StandardErrorPath</key>\n\s*<string>.*</string>\n)\s*-->$\n|\1|" \
+    #   "$WORKING_DIRECTORY/agent/com.loanlassalle.dns-black-hole.update.plist"
+  else
+    # sed -i '' -E "s|(^\s*<!--\s*\n\s*Optional outputs\n(\s*<key>StandardOutPath</key>\n\s*<string>.*</string>\n\s*<key>StandardErrorPath</key>\n\s*<string>.*</string>\n)\s*-->$\n)||" \
+    #   "$WORKING_DIRECTORY/agent/com.loanlassalle.dns-black-hole.update.plist"
+  fi
 }
 
 # Copy the plist file

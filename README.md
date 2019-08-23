@@ -4,8 +4,7 @@ Author: Loan Lassalle
 ***
 
 ## TODO
-* Debug mode for all scripts
-* Automatisation of plist StartCalendarInterval section
+* Automatisation of optional outputs with verbosity level to 2
 * Explanation of "How to schedule the update of the hosts file"
 
 ## Purpose
