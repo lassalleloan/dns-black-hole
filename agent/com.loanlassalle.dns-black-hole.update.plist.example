@@ -11,7 +11,7 @@
 		<key>Label</key>
         <string>com.loanlassalle.dns-black-hole.update</string>
 
-        <!-- 
+        <!--
             Absolute path must be configured
             Concatenation between WORKING_DIRECTORY in env.list file and 
             the path "/agent/com.loanlassalle.dns-black-hole.update.plist"
@@ -25,7 +25,7 @@
             <string>-u</string>
             <string>run-app</string>
         </array>
-        <!-- 
+        <!--
         Optional outputs
         <key>StandardOutPath</key>
         <string>agent/stdout</string>
