@@ -7,10 +7,10 @@
 # Author: Loan Lassalle <https://github.com/lassalleloan>
 
 # Current version of StevenBlack/hosts source files
-CURRENT_VERSION="$(sed -En 's/^# CURRENT_VERSION=([0-9]([.][0-9]*)*)$/\1/p' env.list)"
+CURRENT_VERSION="$(sed -En 's/^# CURRENT_VERSION=([0-9]+([.][0-9]+)*)$/\1/p' env.list)"
 
 # Default verbosity level
-VERBOSITY="$(sed -En 's/^# VERBOSITY=([0-9]([.][0-9]*)*)$/\1/p' env.list)"
+VERBOSITY="$(sed -En 's/^# VERBOSITY=([0-9]{1})$/\1/p' env.list)"
 
 # Display a banner
 banner() {
@@ -44,7 +44,7 @@ check_updates() {
 
   # Retrieve the version number
   new_version="$(curl --silent https://raw.githubusercontent.com/StevenBlack/hosts/master/package.json | \
-    sed -En 's/^[ ]*"version": "([0-9]([.][0-9]*)*)",$/\1/p')"
+    sed -En 's/^[ ]*"version": "([0-9]+([.][0-9]+)*)",$/\1/p')"
 
   if [ "$verbosity" -eq 2 ]; then
     printf "Current version: %*s\n" 12 "$current_version"

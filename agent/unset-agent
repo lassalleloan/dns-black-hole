@@ -7,10 +7,10 @@
 # Author: Loan Lassalle <https://github.com/lassalleloan>
 
 # Working directory
-WORKING_DIRECTORY="$(sed -En 's/^# WORKING_DIRECTORY=([^ #]+)/\1/p' env.list)"
+WORKING_DIRECTORY="$(sed -En 's/^# WORKING_DIRECTORY=(\/[^ #]+)[ #]?.*$/\1/p' env.list)"
 
 # Default verbosity level
-VERBOSITY="$(sed -En 's/^# VERBOSITY=([0-9]([.][0-9]*)*)$/\1/p' env.list)"
+VERBOSITY="$(sed -En 's/^# VERBOSITY=([0-9]{1})$/\1/p' env.list)"
 
 # Display a banner
 banner() {
@@ -76,7 +76,7 @@ remove_plist() {
   if [ "$verbosity" -eq 2 ]; then
     rm -r "$WORKING_DIRECTORY/agent/com.loanlassalle.dns-black-hole.update.plist"
 
-    file_count="$(find ~/Library/LaunchAgents -type f | wc -l | sed -E 's/( )+//g')"
+    file_count="$(find ~/Library/LaunchAgents -type f | wc -l | sed -E 's/[[:space:]]+//')"
     if [ "$file_count" -eq 1 ]; then
       rm -r ~/Library/LaunchAgents
     else
@@ -85,7 +85,7 @@ remove_plist() {
   else
     rm -rf "$WORKING_DIRECTORY/agent/com.loanlassalle.dns-black-hole.update.plist" > /dev/null 2>&1
 
-    file_count="$(find ~/Library/LaunchAgents -type f 2> /dev/null | wc -l | sed -E 's/( )+//g')"
+    file_count="$(find ~/Library/LaunchAgents -type f 2> /dev/null | wc -l | sed -E 's/[[:space:]]+//')"
     if [ "$file_count" -eq 1 ]; then
       rm -rf ~/Library/LaunchAgents > /dev/null 2>&1
     else
@@ -93,7 +93,7 @@ remove_plist() {
     fi
   fi
 
-  file_count="$(find ~/Library/LaunchAgents -type f 2> /dev/null | wc -l | sed -E 's/( )+//g')"
+  file_count="$(find ~/Library/LaunchAgents -type f 2> /dev/null | wc -l | sed -E 's/[[:space:]]+//')"
 }
 
 # Check if it is an integer

@@ -7,10 +7,10 @@
 # Author: Loan Lassalle <https://github.com/lassalleloan>
 
 # Working directory
-WORKING_DIRECTORY="$(sed -En 's/^# WORKING_DIRECTORY=([^ #]+)/\1/p' env.list)"
+WORKING_DIRECTORY="$(sed -En 's/^# WORKING_DIRECTORY=(\/[^ #]+)[ #]?.*$/\1/p' env.list)"
 
 # Default verbosity level
-VERBOSITY="$(sed -En 's/^# VERBOSITY=([0-9]([.][0-9]*)*)$/\1/p' env.list)"
+VERBOSITY="$(sed -En 's/^# VERBOSITY=([0-9]{1})[ #]?.*$/\1/p' env.list)"
 
 # Display a banner
 banner() {
@@ -51,16 +51,20 @@ create_plist() {
   fi
 
   # Edit the working directory in plist file
-  sed -i '' -E "s|^        <string><absolute-path></string>$|        <string>$WORKING_DIRECTORY</string>|" \
+  sed -i '' -E "s|^[[:space:]]*<string><absolute-path></string>$|        <string>$WORKING_DIRECTORY</string>|" \
     "$WORKING_DIRECTORY/agent/com.loanlassalle.dns-black-hole.update.plist"
 
   if [ "$verbosity" -eq 2 ]; then
-    # sed -i '' -E "s|^\s*<!--\s*\n\s*Optional outputs\n(\s*<key>StandardOutPath</key>\n\s*<string>.*</string>\n\s*<key>StandardErrorPath</key>\n\s*<string>.*</string>\n)\s*-->$\n|\1|" \
-    #   "$WORKING_DIRECTORY/agent/com.loanlassalle.dns-black-hole.update.plist"
+    sed -i '' -E 's/[[:space:]]*<!-- (<key>Standard(Out|Error)Path.*) -->/        \1/' \
+      "$WORKING_DIRECTORY/agent/com.loanlassalle.dns-black-hole.update.plist"
   else
-    # sed -i '' -E "s|(^\s*<!--\s*\n\s*Optional outputs\n(\s*<key>StandardOutPath</key>\n\s*<string>.*</string>\n\s*<key>StandardErrorPath</key>\n\s*<string>.*</string>\n)\s*-->$\n)||" \
-    #   "$WORKING_DIRECTORY/agent/com.loanlassalle.dns-black-hole.update.plist"
+    sed -i '' -E '/[[:space:]]*<!-- Optional outputs \(especially for debugging\) -->/d' \
+      "$WORKING_DIRECTORY/agent/com.loanlassalle.dns-black-hole.update.plist"
+    sed -i '' -E '/[[:space:]]*<!-- (<key>Standard(Out|Error)Path.*) -->/d' \
+      "$WORKING_DIRECTORY/agent/com.loanlassalle.dns-black-hole.update.plist"
   fi
+
+  sed -i '' '/^$/d' "$WORKING_DIRECTORY/agent/com.loanlassalle.dns-black-hole.update.plist"
 }
 
 # Copy the plist file
