@@ -10,7 +10,7 @@
     <dict>
 		<key>Label</key>
         <string>com.loanlassalle.dns-black-hole.update</string>
-
+        
         <!--
             Absolute path must be configured
             Concatenation between WORKING_DIRECTORY in env.list file and 
@@ -25,13 +25,11 @@
             <string>-u</string>
             <string>run-app</string>
         </array>
-        <!--
-        Optional outputs
-        <key>StandardOutPath</key>
-        <string>agent/stdout</string>
-        <key>StandardErrorPath</key>
-        <string>agent/stderr</string>
-        -->
+
+        <!-- Optional outputs (especially for debugging) -->
+        <!-- <key>StandardOutPath</key><string>agent/stdout</string> -->
+        <!-- <key>StandardErrorPath</key><string>agent/stderr</string> -->
+
         <key>StartCalendarInterval</key>
         <array>
             <dict>
