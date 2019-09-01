@@ -3,10 +3,6 @@
 Author: Loan Lassalle
 ***
 
-## TODO
-* Automatisation of optional outputs with verbosity level to 2
-* Explanation of "How to schedule the update of the hosts file"
-
 ## Purpose
 
 This repository provides an easy way to generate host files from [StevenBlack's hosts repository](https://github.com/StevenBlack/hosts).  
@@ -176,13 +172,24 @@ killall -HUP mDNSResponder
 
 ## Miscellaneous
 
-=========================== **Work in progress** ===========================
+### How to automate the update of the hosts file
 
-### How to schedule the update of the hosts file
+It may be interesting for you to automate the update of the hosts file. To do this, you must create an agent which will execute the `run-app` script. To simplify configuration, you can use the `agent/set-agent` script.
 
-It may be interesting for you  
+Here are the steps of `agent/set-agent` script:
+1. Creation of the property list file to specify the behavior of the agent
+   1. Copy the property list file from plist.example
+   2. Edit the working directory in property list file
+   2. Edit the optional ouputs in property list file
+2. Copying of the property list file to `~/Library/LaunchAgents`
+3. Loading the property list file
 
-=========================== **Work in progress** ===========================
+After running the `agent/set-agent` script, the `com.loanlassalle.dns-black-hole.update` agent is ready to run automatically according to calendar intervals.  
+The agent will perform every day at 20:30 PM.
+
+**Note:** It is possible to change the execution interval. To do this, please follow instructions on [this website](https://www.launchd.info) at Configuration/StartCalendarInterval section.
+
+If you want to reverse all these actions produced by the `agent/set-agent` script, you can use the `agent/unset-agent` script. It will delete all files created and clean up the User-provided agent directory.
 
 ### How to know domains contacted while web browsing
 
