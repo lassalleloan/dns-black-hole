@@ -33,12 +33,12 @@ usage() {
   printf "  -h, --help                      Help on how to use this script\n"
 }
 
-# Create the plist file
+# Create the property list file
 create_plist() {
   local verbosity="$1"
 
   if [ "$verbosity" -ne 0 ]; then
-    printf "Creating the plist file\n"
+    printf "Creating the property list file\n"
   fi
 
   # Copy the plist.example file
@@ -50,10 +50,11 @@ create_plist() {
       "$WORKING_DIRECTORY/agent/com.loanlassalle.dns-black-hole.update.plist" > /dev/null 2>&1
   fi
 
-  # Edit the working directory in plist file
+  # Edit the working directory in property list file
   sed -i '' -E "s|^[[:space:]]*<string><absolute-path></string>$|        <string>$WORKING_DIRECTORY</string>|" \
     "$WORKING_DIRECTORY/agent/com.loanlassalle.dns-black-hole.update.plist"
 
+  # Edit the optional ouput in property list file
   if [ "$verbosity" -eq 2 ]; then
     sed -i '' -E 's/[[:space:]]*<!-- (<key>Standard(Out|Error)Path.*) -->/        \1/' \
       "$WORKING_DIRECTORY/agent/com.loanlassalle.dns-black-hole.update.plist"
@@ -67,12 +68,12 @@ create_plist() {
   sed -i '' '/^$/d' "$WORKING_DIRECTORY/agent/com.loanlassalle.dns-black-hole.update.plist"
 }
 
-# Copy the plist file
+# Copy the property list file
 copy_plist() {
   local verbosity="$1"
 
   if [ "$verbosity" -ne 0 ]; then
-    printf "Copying the plist file\n"
+    printf "Copying the property list file\n"
   fi
 
   if [ "$verbosity" -eq 2 ]; then
@@ -88,12 +89,12 @@ copy_plist() {
   fi
 }
 
-# Load the plist file
+# Load the property list file
 load_plist() {
   local verbosity="$1"
 
   if [ "$verbosity" -ne 0 ]; then
-    printf "Loading the plist file\n"
+    printf "Loading the property list file\n"
   fi
 
   # Load the job while also marking the job as "not disabled"

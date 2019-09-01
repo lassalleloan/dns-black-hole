@@ -48,7 +48,7 @@ stop_agent() {
   fi
 }
 
-# Unload the plist file
+# Unload the property list file
 unload_plist() {
   local verbosity="$1"
 
@@ -65,12 +65,12 @@ unload_plist() {
   fi
 }
 
-# Remove the plist file
+# Remove the property list file
 remove_plist() {
   local verbosity="$1"
 
   if [ "$verbosity" -ne 0 ]; then
-    printf "Removing the plist file\n"
+    printf "Removing the property list file\n"
   fi
 
   if [ "$verbosity" -eq 2 ]; then
