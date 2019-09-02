@@ -51,7 +51,7 @@ create_plist() {
   fi
 
   # Edit the working directory in property list file
-  sed -i '' -E "s/<absolute-path>/$WORKING_DIRECTORY/" \
+  sed -i '' -E "s|<absolute-path>|$WORKING_DIRECTORY|" \
     "$WORKING_DIRECTORY/agent/com.loanlassalle.dns-black-hole.update.plist"
 
   # Edit debugging outputs in property list file
