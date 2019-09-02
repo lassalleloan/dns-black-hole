@@ -26,9 +26,15 @@
             <string>run-app</string>
         </array>
 
-        <!-- Optional outputs (especially for debugging) -->
-        <!-- <key>StandardOutPath</key><string>agent/stdout</string> -->
-        <!-- <key>StandardErrorPath</key><string>agent/stderr</string> -->
+        <!--
+            Debugging outputs
+        -->
+        <!--
+            <key>StandardOutPath</key>
+            <string>agent/stdout</string>
+            <key>StandardErrorPath</key>
+            <string>agent/stderr</string>
+        -->
 
         <key>StartCalendarInterval</key>
         <array>
