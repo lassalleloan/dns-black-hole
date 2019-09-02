@@ -51,21 +51,23 @@ create_plist() {
   fi
 
   # Edit the working directory in property list file
-  sed -i '' -E "s|^[[:space:]]*<string><absolute-path></string>$|        <string>$WORKING_DIRECTORY</string>|" \
+  sed -i '' -E "s/<absolute-path>/$WORKING_DIRECTORY/" \
     "$WORKING_DIRECTORY/agent/com.loanlassalle.dns-black-hole.update.plist"
 
-  # Edit the optional ouput in property list file
+  # Edit debugging outputs in property list file
   if [ "$verbosity" -eq 2 ]; then
-    sed -i '' -E 's/[[:space:]]*<!-- (<key>Standard(Out|Error)Path.*) -->/        \1/' \
+
+    # Delete XML comments at the 32th and 37th line
+    sed -i '' '32d;37d' "$WORKING_DIRECTORY/agent/com.loanlassalle.dns-black-hole.update.plist"
+
+    # Change the 8-space tab from 32nd line to 35th line
+    sed -i '' '32,35s/            /        /' \
       "$WORKING_DIRECTORY/agent/com.loanlassalle.dns-black-hole.update.plist"
   else
-    sed -i '' -E '/[[:space:]]*<!-- Optional outputs \(especially for debugging\) -->/d' \
-      "$WORKING_DIRECTORY/agent/com.loanlassalle.dns-black-hole.update.plist"
-    sed -i '' -E '/[[:space:]]*<!-- (<key>Standard(Out|Error)Path.*) -->/d' \
-      "$WORKING_DIRECTORY/agent/com.loanlassalle.dns-black-hole.update.plist"
-  fi
 
-  sed -i '' '/^$/d' "$WORKING_DIRECTORY/agent/com.loanlassalle.dns-black-hole.update.plist"
+    # Delete XML comments from 28nd line to 38th line
+    sed -i '' '28,38d' "$WORKING_DIRECTORY/agent/com.loanlassalle.dns-black-hole.update.plist"
+  fi
 }
 
 # Copy the property list file
@@ -85,7 +87,8 @@ copy_plist() {
 
     # User-provided agent directory
     mkdir -p ~/Library/LaunchAgents > /dev/null 2>&1
-    cp "$WORKING_DIRECTORY/agent/com.loanlassalle.dns-black-hole.update.plist" ~/Library/LaunchAgents > /dev/null 2>&1
+    cp "$WORKING_DIRECTORY/agent/com.loanlassalle.dns-black-hole.update.plist" \
+      ~/Library/LaunchAgents > /dev/null 2>&1
   fi
 }
 
@@ -99,7 +102,7 @@ load_plist() {
 
   # Load the job while also marking the job as "not disabled"
   # The job will restart on the next login/reboot.
-  launchctl load -w ~/Library/LaunchAgents/com.loanlassalle.dns-black-hole.update.plist > /dev/null 2>&1
+  launchctl load -w ~/Library/LaunchAgents/com.loanlassalle.dns-black-hole.update.plist \> /dev/null 2>&1
 }
 
 # Check if it is an integer
@@ -158,5 +161,5 @@ if [ "$VERBOSITY" -ne 0 ]; then
 fi
 
 create_plist "$VERBOSITY"
-copy_plist "$VERBOSITY"
-load_plist "$VERBOSITY"
+# copy_plist "$VERBOSITY"
+# load_plist "$VERBOSITY"
