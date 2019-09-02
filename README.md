@@ -180,12 +180,12 @@ Here are the steps of `agent/set-agent` script:
 1. Creation of the property list file to specify the behavior of the agent
    1. Copy the property list file from plist.example
    2. Edit the working directory in property list file
-   2. Edit the optional ouputs in property list file
+   2. Edit the debugging ouputs in property list file
 2. Copying of the property list file to `~/Library/LaunchAgents`
 3. Loading the property list file
 
 After running the `agent/set-agent` script, the `com.loanlassalle.dns-black-hole.update` agent is ready to run automatically according to calendar intervals.  
-The agent will perform every day at 20:30 PM.
+The agent will perform every day at 21:00 PM.
 
 **Note:** It is possible to change the execution interval. To do this, please follow instructions on [this website](https://www.launchd.info) at Configuration/StartCalendarInterval section.
 
