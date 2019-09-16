@@ -51,7 +51,9 @@ check_updates() {
     printf "New version: %*s\n" 16 "$new_version"
   fi
 
-  if [ ! -f src/hosts ] || [ ! -s src/hosts ] || [ "$current_version" \< "$new_version" ]; then
+  if [ ! -f src/hosts ] || \
+    [ ! -s src/hosts ] || \
+    [ "$(printf '%s\n' "$current_version" "$new_version" | sort -rV | head -n 1)" != "$current_version" ]; then
 
     # Edit CURRENT_VERSION variable in env.list file
     sed -i '' -E "s/^# CURRENT_VERSION=$current_version$/# CURRENT_VERSION=$new_version/" env.list
