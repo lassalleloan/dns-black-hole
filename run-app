@@ -40,7 +40,7 @@ FORCE=false
 PRUNE=false
 
 # Remove all Docker data
-WIPEOUT=false
+WIPE=false
 
 # Default verbosity level
 VERBOSITY="$(sed -En 's/^# VERBOSITY=([0-9]{1})$/\1/p' env.list)"
@@ -56,7 +56,7 @@ banner() {
 
 # Usage of the script
 usage() {
-  printf "Usage: run-app [--interactive | --detach --force --verbosity (0 | 1 | 2) | --prune --verbosity (0 | 1 | 2) | --wipeout --verbosity (0 | 1 | 2)]\n"
+  printf "Usage: run-app [--interactive | --detach --force --verbosity (0 | 1 | 2) | --prune --verbosity (0 | 1 | 2) | --wipe --verbosity (0 | 1 | 2)]\n"
   printf "\n"
   printf "Manage the dns-black-hole app\n"
   printf "\n"
@@ -70,7 +70,7 @@ usage() {
   printf "  -d, --detach                    Leave the container running in the background (default processing mode)\n"
   printf "  -f, --force                     Force the application to run, bypass any prior checking\n"
   printf "  -p, --prune                     Remove all unused Docker data\n"
-  printf "  -w, --wipeout                   Remove all Docker data\n"
+  printf "  -w, --wipe                   Remove all Docker data\n"
   printf "  -v, --verbosity (0 | 1 | 2)     Level of verbosity: no ouput, step information, interactive\n"
   printf "  -h, --help                      Help on how to use this script\n"
 }
@@ -357,7 +357,7 @@ for arg in "$@"; do
     "--prune")
       set -- "$@" "-p"
       ;;
-    "--wipeout")
+    "--wipe")
       set -- "$@" "-w"
       ;;
     "--verbosity")
@@ -389,7 +389,7 @@ while getopts ":idfpwv:h" option; do
       PRUNE=true
       ;;
     w)
-      WIPEOUT=true
+      WIPE=true
       ;;
     v)
       VERBOSITY=$OPTARG
@@ -411,12 +411,12 @@ while getopts ":idfpwv:h" option; do
   esac
 done
 
-if { [ "$INTERACTIVE" = true ] || [ "$DETACH" = true ] && { [ "$PRUNE" = true ] || [ "$WIPEOUT" = true ]; } } \
-  || { { [ "$INTERACTIVE" = true ] || [ "$PRUNE" = true ] || [ "$WIPEOUT" = true ]; } && [ "$DETACH" = true ]; }; then
-  printf -- "--interactive --detach --prune --wipeout: options must be used separately\n"
+if { [ "$INTERACTIVE" = true ] || [ "$DETACH" = true ] && { [ "$PRUNE" = true ] || [ "$WIPE" = true ]; } } \
+  || { { [ "$INTERACTIVE" = true ] || [ "$PRUNE" = true ] || [ "$WIPE" = true ]; } && [ "$DETACH" = true ]; }; then
+  printf -- "--interactive --detach --prune --wipe: options must be used separately\n"
   usage
   exit 1
-elif [ "$INTERACTIVE" = true ] || [ "$PRUNE" = true ] || [ "$WIPEOUT" = true ] && [ "$FORCE" = true ]; then
+elif [ "$INTERACTIVE" = true ] || [ "$PRUNE" = true ] || [ "$WIPE" = true ] && [ "$FORCE" = true ]; then
   printf -- "--force: option must be used with --detach option\n"
   usage
   exit 1
@@ -431,7 +431,7 @@ elif [ "$PRUNE" = true ]; then
   stop_docker "$VERBOSITY"
 
   exit 0
-elif [ "$WIPEOUT" = true ]; then
+elif [ "$WIPE" = true ]; then
 
   # Start Docker application
   start_docker "$VERBOSITY"
