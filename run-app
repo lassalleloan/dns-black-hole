@@ -422,7 +422,7 @@ elif [ "$INTERACTIVE" = true ] || [ "$PRUNE" = true ] || [ "$WIPE" = true ] && [
   exit 1
 elif [ "$PRUNE" = true ]; then
 
-  Start Docker application
+  # Start Docker application
   start_docker "$VERBOSITY"
 
   remove_all_unused "$VERBOSITY"
