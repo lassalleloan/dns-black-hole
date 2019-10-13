@@ -43,7 +43,7 @@ check_updates() {
   fi
 
   # Retrieve the version number
-  new_version="$(curl --silent https://raw.githubusercontent.com/StevenBlack/hosts/master/package.json | \
+  local new_version="$(curl --silent https://raw.githubusercontent.com/StevenBlack/hosts/master/package.json | \
     sed -En 's/^[ ]*"version": "([0-9]+([.][0-9]+)*)",$/\1/p')"
 
   if [ "$verbosity" -eq 2 ]; then
