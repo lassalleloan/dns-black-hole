@@ -56,12 +56,8 @@ create_plist() {
 
   # Edit debugging outputs in property list file
   if [ "$verbosity" -eq 2 ]; then
-
-    # Delete XML comments at the 32th and 37th line
-    sed -i '' '32d;37d' "$WORKING_DIRECTORY/agent/com.loanlassalle.dns-black-hole.update.plist"
-
-    # Change the 8-space tab from 32nd line to 35th line
-    sed -i '' '32,35s/            /        /' \
+    # Delete XML comments at the 32th and 37th line and change the 8-space tab from 33nd line to 36th line
+    sed -i '' '32d;37d;33,36s/            /        /' \
       "$WORKING_DIRECTORY/agent/com.loanlassalle.dns-black-hole.update.plist"
   else
 
