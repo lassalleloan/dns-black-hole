@@ -436,7 +436,7 @@ elif [ "$WIPE" = true ]; then
   # Start Docker application
   start_docker "$VERBOSITY"
 
-  remove_unused "$VERBOSITY"
+  remove_all "$VERBOSITY"
 
   # Stop Docker application
   stop_docker "$VERBOSITY"
