@@ -185,7 +185,9 @@ Here are the steps of `agent/set-agent` script:
 3. Loading the property list file
 
 After running the `agent/set-agent` script, the `com.loanlassalle.dns-black-hole.update` agent is ready to run automatically according to calendar intervals.  
-The agent will perform every day at 21:00 PM.
+The agent will perform every 24 hours.
+
+**Note:** If the system is asleep, the job will be started the next time the computer wakes up. If multiple intervals transpire before the computer is woken, those events will be coalesced into one event upon wake from sleep.
 
 **Note:** It is possible to change the execution interval. To do this, please follow instructions on [this website](https://www.launchd.info) at Configuration/StartCalendarInterval section.
 

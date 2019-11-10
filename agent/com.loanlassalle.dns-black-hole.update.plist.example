@@ -36,14 +36,16 @@
             <string>agent/stderr</string>
         -->
 
-        <key>StartCalendarInterval</key>
-        <array>
-            <dict>
-                <key>Hour</key>
-                <integer>21</integer>
-                <key>Minute</key>
-                <integer>0</integer>
-            </dict>
-        </array>
+        <key>RunAtLoad</key>
+        <true/>
+
+        <!--
+            Run the job once every 24 hours
+            If the system is asleep, the job will be started the next time the computer wakes up.
+            If multiple intervals transpire before the computer is woken, 
+            those events will be coalesced into one event upon wake from sleep.
+        -->
+        <key>StartInterval</key>
+        <integer>86400</integer>
     </dict>
 </plist>
