@@ -6,6 +6,13 @@
 #
 # Author: Loan Lassalle <https://github.com/lassalleloan>
 
+# env.list file based on env.list.example file 
+# and filled with your own values is required
+if [ ! -f env.list ]; then
+  printf "env.list: No such file\n"
+  exit 1
+fi
+
 # Working directory
 WORKING_DIRECTORY="$(sed -En 's/^# WORKING_DIRECTORY=(\/[^ #]+)[ #]?.*$/\1/p' env.list)"
 
@@ -17,7 +24,10 @@ CURRENT_VERSION="$(sed -En 's/^# CURRENT_VERSION=([0-9]+([.][0-9]+)*)$/\1/p' env
 LATEST_VERSION="$(sed -En 's/^# LATEST_VERSION=([0-9]+([.][0-9]+)*)$/\1/p' env.list)"
 
 # Date and time expressed according to ISO 8601 of last update of StevenBlack/hosts source files
-LAST_UPDATE_ON="$(sed -En 's/^# LAST_UPDATE_ON=([12]([0-9]{3})-(0[1-9]|1[0-2])-(0[1-9]|[12][0-9]|3[01])T(0[0-9]|1[0-9]|2[0-3]):([0-5][0-9]):([0-5][0-9])Z)$/\1/p' env.list)"
+FULL_DATE_REGEX="([12]([0-9]{3}))-(0[1-9]|1[0-2])-(0[1-9]|[12][0-9]|3[01])"
+FULL_TIME_REGEX="(0[0-9]|1[0-9]|2[0-3]):([0-5][0-9]):([0-5][0-9])"
+DATE_TIME_ISO8601_REGEX="$FULL_DATE_REGEX""T""$FULL_TIME_REGEX""Z"
+LAST_UPDATE_ON="$(sed -En 's/^# LAST_UPDATE_ON=('"$DATE_TIME_ISO8601_REGEX"')$/\1/p' env.list)"
 
 # Default verbosity level
 VERBOSITY="$(sed -En 's/^# VERBOSITY=([0-9]{1})$/\1/p' env.list)"

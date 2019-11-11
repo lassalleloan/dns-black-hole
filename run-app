@@ -6,6 +6,13 @@
 #
 # Author: Loan Lassalle <https://github.com/lassalleloan>
 
+# env.list file based on env.list.example file 
+# and filled with your own values is required
+if [ ! -f env.list ]; then
+  printf "env.list: No such file\n"
+  exit 1
+fi
+
 # Start Docker application
 DOCKER_WAS_RUNNING=false
 
