@@ -209,10 +209,10 @@ The second solution consists to extract domains from DNS logs. The first thing t
 sudo log config --mode "private_data:on"
 ```
 
-Then, you can extract domains contacted while web browsing from logs. To do this, you can use the following command. This command streams information log data from mDNSResponder process, extract domains and save to dns-request-log file.
+Then, you can extract domains contacted while web browsing from logs. To do this, you can use the following command. This command streams information log data from mDNSResponder process, extract domains and save to dns-requests.log file.
 
 ```sh
-log stream --level info --process mDNSResponder --type log | sed -En 's/^.*GetServerForQuestion.*for (([a-zA-Z0-9_-]+:\/\/)?(([a-zA-Z0-9_-]+[.])*)([a-zA-Z0-9_-]+[.][a-zA-Z0-9_-]+))[.] \((AAAA|Addr)\)$/\1/w'`date +%Y-%m-%dT%H:%M:%S`_dns-request-log
+log stream --level info --process mDNSResponder --type log | sed -En 's/^.*GetServerForQuestion.*for (([a-zA-Z0-9_-]+:\/\/)?(([a-zA-Z0-9_-]+[.])*)([a-zA-Z0-9_-]+[.][a-zA-Z0-9_-]+))[.] \((AAAA|Addr)\)$/\1/w'`date +%FT%TZ`_dns-requests.log
 ```
 
 When you want to stop the domains extraction, you just need to stop the command with interruption signal or `CTRL + C` and disable the showing of private data with the follwoing command.
