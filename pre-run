@@ -43,21 +43,20 @@ check_updates() {
   fi
 
   # Retrieve the version number
-  local new_version="$(curl --silent https://raw.githubusercontent.com/StevenBlack/hosts/master/package.json | \
+  local latest_version="$(curl --silent https://raw.githubusercontent.com/StevenBlack/hosts/master/package.json | \
     sed -En 's/^[ ]*"version": "([0-9]+([.][0-9]+)*)",$/\1/p')"
 
   if [ "$verbosity" -eq 2 ]; then
     printf "Current version: %*s\n" 12 "$current_version"
-    printf "New version: %*s\n" 16 "$new_version"
+    printf "Latest version: %*s\n" 16 "$latest_version"
   fi
 
   if [ ! -f src/hosts ] || \
     [ ! -s src/hosts ] || \
-    [ "$(printf '%s\n' "$current_version" "$new_version" | sort -rV | head -n 1)" != "$current_version" ]; then
+    [ "$(printf '%s\n' "$current_version" "$latest_version" | sort -rV | head -n 1)" != "$current_version" ]; then
 
-    # Edit CURRENT_VERSION & LAST_UPDATE_ON variables in env.list file
-    sed -i '' -E "s/^# CURRENT_VERSION=$current_version$/# CURRENT_VERSION=$new_version/" env.list
-    sed -i '' -E "s/^# LAST_UPDATE_ON=[12]([0-9]{3})-(0[1-9]|1[0-2])-(0[1-9]|[12][0-9]|3[01])T(0[0-9]|1[0-9]|2[0-3]):([0-5][0-9]):([0-5][0-9])Z$/# LAST_UPDATE_ON=$(date -u +%FT%TZ)/" env.list
+    # Edit LATEST_VERSION variable in env.list file
+    sed -i '' -E "s/^# LATEST_VERSION=$current_version$/# LATEST_VERSION=$latest_version/" env.list
   else
 
     # Stop all future process
