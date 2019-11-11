@@ -3,6 +3,12 @@
 Author: Loan Lassalle
 ***
 
+## TODO
+* Logging system if the verbosity level is 0
+* Script to simplify the task "How to temporarily unblock DNS requests for a specific domain"
+* Script to simplify the task "Domains associated with a string"
+* Script to simplify the task "How to know domains contacted while web browsing"
+
 ## Purpose
 
 This repository provides an easy way to generate host files from [StevenBlack's hosts repository](https://github.com/StevenBlack/hosts).  
