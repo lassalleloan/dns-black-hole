@@ -16,6 +16,12 @@ fi
 # Current version of StevenBlack/hosts source files
 CURRENT_VERSION="$(sed -En 's/^# CURRENT_VERSION=([0-9]+([.][0-9]+)*)$/\1/p' env.list)"
 
+# Date and time expressed according to ISO 8601 of last update of StevenBlack/hosts source files
+FULL_DATE_REGEX="([12]([0-9]{3}))-(0[1-9]|1[0-2])-(0[1-9]|[12][0-9]|3[01])"
+FULL_TIME_REGEX="(0[0-9]|1[0-9]|2[0-3]):([0-5][0-9]):([0-5][0-9])"
+DATE_TIME_ISO8601_REGEX="$FULL_DATE_REGEX""T""$FULL_TIME_REGEX""Z"
+LAST_LAUNCH_ON="$(sed -En 's/^# LAST_LAUNCH_ON=('"$DATE_TIME_ISO8601_REGEX"')$/\1/p' env.list)"
+
 # Default verbosity level
 VERBOSITY="$(sed -En 's/^# VERBOSITY=([0-9]{1})$/\1/p' env.list)"
 
@@ -62,9 +68,13 @@ check_updates() {
     [ ! -s src/hosts ] || \
     [ "$(printf '%s\n' "$current_version" "$latest_version" | sort -rV | head -n 1)" != "$current_version" ]; then
 
-    # Edit LATEST_VERSION variable in env.list file
+    # Edit LATEST_VERSION & LAST_LAUNCH_ON variable in env.list file
     sed -i '' -E "s/^# LATEST_VERSION=$current_version$/# LATEST_VERSION=$latest_version/" env.list
+    sed -i '' -E "s/^# LAST_LAUNCH_ON=$LAST_LAUNCH_ON/# LAST_LAUNCH_ON=$(date -u +%FT%TZ)/" env.list
   else
+
+    # Edit LAST_LAUNCH_ON variable in env.list file
+    sed -i '' -E "s/^# LAST_LAUNCH_ON=$LAST_LAUNCH_ON/# LAST_LAUNCH_ON=$(date -u +%FT%TZ)/" env.list
 
     # Stop all future process
     exit 1
