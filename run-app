@@ -63,7 +63,7 @@ banner() {
 
 # Usage of the script
 usage() {
-  printf "Usage: run-app [--interactive | --detach --force --verbosity (0 | 1 | 2) | --prune --verbosity (0 | 1 | 2) | --wipe --verbosity (0 | 1 | 2)]\n"
+  printf "Usage: run-app [--interactive | --detach --force [--verbosity (0 | 1 | 2)] | --prune [--verbosity (0 | 1 | 2)] | --wipe [--verbosity (0 | 1 | 2)]]\n"
   printf "\n"
   printf "Manage the dns-black-hole app\n"
   printf "\n"
