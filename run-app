@@ -471,8 +471,7 @@ else
 
   # Run script
   if [ "$VERBOSITY" -ne 0 ]; then
-    printf "\n"
-    printf "Run script\n"
+    printf "\nRun script\n"
   fi
   
   # Start Docker application
