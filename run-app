@@ -418,8 +418,8 @@ while getopts ":idfpwv:h" option; do
   esac
 done
 
-if { [ "$INTERACTIVE" = true ] || [ "$DETACH" = true ] && { [ "$PRUNE" = true ] || [ "$WIPE" = true ]; } } \
-  || { [ "$INTERACTIVE" = true ] || [ "$PRUNE" = true ] || [ "$WIPE" = true ] && [ "$DETACH" = true ]; }; then
+if { [ "$INTERACTIVE" = true ] || [ "$DETACH" = true ] && { [ "$PRUNE" = true ] || [ "$WIPE" = true ]; } } || \
+  { [ "$INTERACTIVE" = true ] || [ "$PRUNE" = true ] || [ "$WIPE" = true ] && [ "$DETACH" = true ]; }; then
   printf -- "--interactive --detach --prune --wipe: options must be used separately\n"
   usage
   exit 1
