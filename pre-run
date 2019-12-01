@@ -49,7 +49,8 @@ usage() {
 # Check for updates
 check_updates() {
   local current_version="$1"
-  local verbosity="$2"
+  local last_launch_on="$2"
+  local verbosity="$3"
 
   if [ "$verbosity" -ne 0 ]; then
     printf "Checking for updates\n"
@@ -70,11 +71,11 @@ check_updates() {
 
     # Edit LATEST_VERSION & LAST_LAUNCH_ON variable in env.list file
     sed -i '' -E "/^# LATEST_VERSION=$current_version(( |#).*)?$/ s/$current_version/$latest_version/" env.list
-    sed -i '' -E "/^# LAST_LAUNCH_ON=$LAST_LAUNCH_ON(( |#).*)?$/ s/$LAST_LAUNCH_ON/$(date -u +%FT%TZ)/" env.list
+    sed -i '' -E "/^# LAST_LAUNCH_ON=$last_launch_on(( |#).*)?$/ s/$last_launch_on/$(date -u +%FT%TZ)/" env.list
   else
 
     # Edit LAST_LAUNCH_ON variable in env.list file
-    sed -i '' -E "/^# LAST_LAUNCH_ON=$LAST_LAUNCH_ON(( |#).*)?$/ s/$LAST_LAUNCH_ON/$(date -u +%FT%TZ)/" env.list
+    sed -i '' -E "/^# LAST_LAUNCH_ON=$last_launch_on(( |#).*)?$/ s/$last_launch_on/$(date -u +%FT%TZ)/" env.list
 
     # Stop all future process
     exit 1
@@ -137,4 +138,4 @@ if [ "$VERBOSITY" -ne 0 ]; then
 fi
 
 # Check for updates
-check_updates "$CURRENT_VERSION" "$VERBOSITY"
+check_updates "$CURRENT_VERSION" "$LAST_LAUNCH_ON" "$VERBOSITY"
