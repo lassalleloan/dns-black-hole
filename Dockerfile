@@ -2,7 +2,7 @@
 #
 # Author: Loan Lassalle <https://github.com/lassalleloan>
 
-FROM alpine:3.10.2
+FROM alpine:3.10.3
 
 MAINTAINER Loan Lassalle <https://github.com/lassalleloan>
 
