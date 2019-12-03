@@ -125,7 +125,7 @@ while getopts ":v:h" option; do
       exit
       ;;
     :)
-      printf "%s: argument required\n" "$OPTARG"
+      printf "%s: required argument\n" "$OPTARG"
       exit 1
       ;;
     \?)
