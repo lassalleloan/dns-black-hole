@@ -20,8 +20,8 @@ RUN apk add --no-cache python3 py3-lxml wget && \
 
 WORKDIR /dns-black-hole/hosts-master/
 
-ENTRYPOINT ["python3", \
-    "updateHostsFile.py", \
-    "--auto", \
-    "--extensions", "fakenews", "gambling", "porn", "social", \
-    "--output", "/dns-black-hole/etc"]
+ENTRYPOINT "python3" \
+    "updateHostsFile.py" \
+    "--auto" \
+    "--extensions" $EXTENSION_1 $EXTENSION_2 $EXTENSION_3 $EXTENSION_4 \
+    "--output" "/dns-black-hole/etc"
