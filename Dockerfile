@@ -18,7 +18,7 @@ RUN apk add --no-cache python3 py3-lxml wget && \
     rm -f /dns-black-hole/master.zip && \
     pip3 install --user -r /dns-black-hole/hosts-master/requirements.txt
 
-WORKDIR /dns-black-hole/hosts-master/
+WORKDIR /dns-black-hole/hosts-master
 
 ENTRYPOINT "python3" \
     "updateHostsFile.py" \
