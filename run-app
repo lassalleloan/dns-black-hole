@@ -6,10 +6,13 @@
 #
 # Author: Loan Lassalle <https://github.com/lassalleloan>
 
-# env.list file based on env.list.example file 
+# env.list and .conf file based on env.list.example and .conf.example file respectively
 # and filled with your own values is required
 if [ ! -f env.list ]; then
   printf "env.list: No such file\n"
+  exit 1
+elif [ ! -f .conf ]; then
+  printf ".conf: No such file\n"
   exit 1
 fi
 
@@ -21,7 +24,7 @@ IMAGE_TAG="dns-black-hole"
 CONTAINER_NAME="$IMAGE_TAG"
 
 # Working directory
-WORKING_DIRECTORY="$(sed -En 's/^# WORKING_DIRECTORY=(\/[^ #]+)(( |#)?.*)$/\1/p' env.list)"
+WORKING_DIRECTORY="$(sed -En 's/^WORKING_DIRECTORY=(\/[^ #]+)(( |#)?.*)$/\1/p' .conf)"
 
 # Source and destination directories for the Docker container"s volume
 SRC_VOLUME_1="$WORKING_DIRECTORY/src/hosts"
@@ -50,7 +53,7 @@ PRUNE=false
 WIPE=false
 
 # Default verbosity level
-VERBOSITY="$(sed -En 's/^# VERBOSITY=([0-9]{1})(( |#).*)?$/\1/p' env.list)"
+VERBOSITY="$(sed -En 's/^VERBOSITY=([0-9]{1})(( |#).*)?$/\1/p' .conf)"
 
 # Display a banner
 banner() {

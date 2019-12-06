@@ -7,16 +7,16 @@
 # Author: Loan Lassalle <https://github.com/lassalleloan>
 
 # Current version of StevenBlack/hosts source files
-CURRENT_VERSION="$(sed -En 's/^# CURRENT_VERSION=([0-9]+([.][0-9]+)*)(( |#).*)?$/\1/p' env.list)"
+CURRENT_VERSION="$(sed -En 's/^CURRENT_VERSION=([0-9]+([.][0-9]+)*)(( |#).*)?$/\1/p' .conf)"
 
 # Date and time expressed according to ISO 8601 of last update of StevenBlack/hosts source files
 FULL_DATE_REGEX="([12]([0-9]{3}))-(0[1-9]|1[0-2])-(0[1-9]|[12][0-9]|3[01])"
 FULL_TIME_REGEX="(0[0-9]|1[0-9]|2[0-3]):([0-5][0-9]):([0-5][0-9])"
 DATE_TIME_ISO8601_REGEX="$FULL_DATE_REGEX""T""$FULL_TIME_REGEX""Z"
-LAST_LAUNCH_ON="$(sed -En "s/^# LAST_LAUNCH_ON=($DATE_TIME_ISO8601_REGEX)(( |#).*)?$/\1/p" env.list)"
+LAST_LAUNCH_ON="$(sed -En "s/^LAST_LAUNCH_ON=($DATE_TIME_ISO8601_REGEX)(( |#).*)?$/\1/p" .conf)"
 
 # Default verbosity level
-VERBOSITY="$(sed -En 's/^# VERBOSITY=([0-9]{1})(( |#).*)?$/\1/p' env.list)"
+VERBOSITY="$(sed -En 's/^VERBOSITY=([0-9]{1})(( |#).*)?$/\1/p' .conf)"
 
 # Display a banner
 banner() {
@@ -64,16 +64,15 @@ check_updates() {
       sort -rV | \
       head -n 1)" != "$current_version" ]; then
 
-    # Edit LATEST_VERSION & LAST_LAUNCH_ON variable in env.list file
-    sed -i '' -E "/^# LATEST_VERSION=$current_version(( |#).*)?$/ s/$current_version/$latest_version/" \
-      env.list
-    sed -i '' -E "/^# LAST_LAUNCH_ON=$last_launch_on(( |#).*)?$/ s/$last_launch_on/$(date -u +%FT%TZ)/" \
-      env.list
+    # Edit LATEST_VERSION & LAST_LAUNCH_ON variable in .conf file
+    sed -i '' -E "/^LATEST_VERSION=$current_version(( |#).*)?$/ s/$current_version/$latest_version/; \
+      /^LAST_LAUNCH_ON=$last_launch_on(( |#).*)?$/ s/$last_launch_on/$(date -u +%FT%TZ)/" \
+      .conf
   else
 
-    # Edit LAST_LAUNCH_ON variable in env.list file
-    sed -i '' -E "/^# LAST_LAUNCH_ON=$last_launch_on(( |#).*)?$/ s/$last_launch_on/$(date -u +%FT%TZ)/" \
-      env.list
+    # Edit LAST_LAUNCH_ON variable in .conf file
+    sed -i '' -E "/^LAST_LAUNCH_ON=$last_launch_on(( |#).*)?$/ s/$last_launch_on/$(date -u +%FT%TZ)/" \
+      .conf
 
     # Stop all future process
     exit 1
