@@ -24,6 +24,14 @@
             <string>sh</string>
             <string>-u</string>
             <string>run-app</string>
+
+            <!--
+                Maximum verbosity level for debugging
+            -->
+            <!--
+                <string>-v</string>
+                <string>2</string>
+            -->
         </array>
 
         <!--
