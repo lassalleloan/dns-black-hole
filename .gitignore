@@ -1,9 +1,11 @@
+.conf
+.log
 agent/com.loanlassalle.dns-black-hole.update.plist
 agent/stdout
 agent/stderr
 backup/hosts.bk
+env.list
 src/hosts
 src/myhosts
 src/whitelist
 src/blacklist
-env.list
