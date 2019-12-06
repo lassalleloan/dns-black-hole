@@ -147,9 +147,12 @@ hard_link "$HARD_LINK_SRC_FILE" "$VERBOSITY"
 flush_dns_cache "$VERBOSITY"
 
 # Edit CURRENT_VERSION, LAST_LAUNCH_ON & LAST_UPDATE_ON variables in env.list file
-sed -i '' -E "/^# CURRENT_VERSION=$CURRENT_VERSION(( |#).*)?$/ s/$CURRENT_VERSION/$LATEST_VERSION/" env.list
-sed -i '' -E "/^# LAST_LAUNCH_ON=$LAST_LAUNCH_ON(( |#).*)?$/ s/$LAST_LAUNCH_ON/$(date -u +%FT%TZ)/" env.list
-sed -i '' -E "/^# LAST_UPDATE_ON=$LAST_UPDATE_ON(( |#).*)?$/ s/$LAST_UPDATE_ON/$(date -u +%FT%TZ)/" env.list
+sed -i '' -E "/^# CURRENT_VERSION=$CURRENT_VERSION(( |#).*)?$/ s/$CURRENT_VERSION/$LATEST_VERSION/" \
+  env.list
+sed -i '' -E "/^# LAST_LAUNCH_ON=$LAST_LAUNCH_ON(( |#).*)?$/ s/$LAST_LAUNCH_ON/$(date -u +%FT%TZ)/" \
+  env.list
+sed -i '' -E "/^# LAST_UPDATE_ON=$LAST_UPDATE_ON(( |#).*)?$/ s/$LAST_UPDATE_ON/$(date -u +%FT%TZ)/" \
+  env.list
 
 # To avoid exit 1 of the DNS cache flushing
 exit 0
