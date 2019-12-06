@@ -1,0 +1,16 @@
+# Scripts configuration file
+#
+# Author: Loan Lassalle <https://github.com/lassalleloan>
+
+# Working directory (absolute path must be configured)
+WORKING_DIRECTORY=<absolute-path>
+
+# Default verbosity level
+# 0 -- no ouput
+# 1 -- step information
+# 2 -- interactive
+VERBOSITY=1
+
+# Current and latest version of StevenBlack/hosts source files
+CURRENT_VERSION=2.5.0
+LATEST_VERSION=2.5.0
