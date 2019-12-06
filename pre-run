@@ -9,12 +9,6 @@
 # Current version of StevenBlack/hosts source files
 CURRENT_VERSION="$(sed -En 's/^CURRENT_VERSION=([0-9]+([.][0-9]+)*)(( |#).*)?$/\1/p' .conf)"
 
-# Date and time expressed according to ISO 8601 of last update of StevenBlack/hosts source files
-FULL_DATE_REGEX="([12]([0-9]{3}))-(0[1-9]|1[0-2])-(0[1-9]|[12][0-9]|3[01])"
-FULL_TIME_REGEX="(0[0-9]|1[0-9]|2[0-3]):([0-5][0-9]):([0-5][0-9])"
-DATE_TIME_ISO8601_REGEX="$FULL_DATE_REGEX""T""$FULL_TIME_REGEX""Z"
-LAST_LAUNCH_ON="$(sed -En "s/^LAST_LAUNCH_ON=($DATE_TIME_ISO8601_REGEX)(( |#).*)?$/\1/p" .conf)"
-
 # Default verbosity level
 VERBOSITY="$(sed -En 's/^VERBOSITY=([0-9]{1})(( |#).*)?$/\1/p' .conf)"
 
@@ -42,8 +36,7 @@ usage() {
 # Check for updates
 check_updates() {
   local current_version="$1"
-  local last_launch_on="$2"
-  local verbosity="$3"
+  local verbosity="$2"
 
   if [ "$verbosity" -ne 0 ]; then
     printf "Checking for updates\n"
@@ -64,15 +57,22 @@ check_updates() {
       sort -rV | \
       head -n 1)" != "$current_version" ]; then
 
-    # Edit LATEST_VERSION & LAST_LAUNCH_ON variable in .conf file
-    sed -i '' -E "/^LATEST_VERSION=$current_version(( |#).*)?$/ s/$current_version/$latest_version/; \
-      /^LAST_LAUNCH_ON=$last_launch_on(( |#).*)?$/ s/$last_launch_on/$(date -u +%FT%TZ)/" \
+    # Edit LATEST_VERSION variable in .conf file
+    sed -i '' -E "/^LATEST_VERSION=$current_version(( |#).*)?$/ s/$current_version/$latest_version/" \
       .conf
+
+    # Audit system
+    if [ "$verbosity" -eq 0 ]; then
+      printf "%s\tinfo\tupgrade\t%s\t%s\t\"New version available\"\n" \
+        "$(date -u +%FT%TZ)" "$current_version" "$latest_version" >> .log
+    fi
   else
 
-    # Edit LAST_LAUNCH_ON variable in .conf file
-    sed -i '' -E "/^LAST_LAUNCH_ON=$last_launch_on(( |#).*)?$/ s/$last_launch_on/$(date -u +%FT%TZ)/" \
-      .conf
+    # Audit system
+    if [ "$verbosity" -eq 0 ]; then
+      printf "%s\tinfo\tupdate\t%s\t%s\t\"No new version available\"\n" \
+        "$(date -u +%FT%TZ)" "$current_version" "$latest_version" >> .log
+    fi
 
     # Stop all future process
     exit 1
@@ -135,4 +135,4 @@ if [ "$VERBOSITY" -ne 0 ]; then
 fi
 
 # Check for updates
-check_updates "$CURRENT_VERSION" "$LAST_LAUNCH_ON" "$VERBOSITY"
+check_updates "$CURRENT_VERSION" "$VERBOSITY"
