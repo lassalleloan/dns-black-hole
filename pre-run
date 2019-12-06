@@ -67,7 +67,9 @@ check_updates() {
 
   if [ ! -f src/hosts ] || \
     [ ! -s src/hosts ] || \
-    [ "$(printf '%s\n' "$current_version" "$latest_version" | sort -rV | head -n 1)" != "$current_version" ]; then
+    [ "$(printf '%s\n' "$current_version" "$latest_version" | \
+      sort -rV | \
+      head -n 1)" != "$current_version" ]; then
 
     # Edit LATEST_VERSION & LAST_LAUNCH_ON variable in env.list file
     sed -i '' -E "/^# LATEST_VERSION=$current_version(( |#).*)?$/ s/$current_version/$latest_version/" \
