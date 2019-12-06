@@ -87,7 +87,8 @@ copy_plist() {
 
     # User-provided agent directory
     mkdir -p ~/Library/LaunchAgents
-    cp "$WORKING_DIRECTORY/agent/com.loanlassalle.dns-black-hole.update.plist" ~/Library/LaunchAgents
+    cp "$WORKING_DIRECTORY/agent/com.loanlassalle.dns-black-hole.update.plist" \
+      ~/Library/LaunchAgents
   else
 
     # User-provided agent directory
@@ -107,7 +108,8 @@ load_plist() {
 
   # Load the job while also marking the job as "not disabled"
   # The job will restart on the next login/reboot.
-  launchctl load -w ~/Library/LaunchAgents/com.loanlassalle.dns-black-hole.update.plist > /dev/null 2>&1
+  launchctl load -w ~/Library/LaunchAgents/com.loanlassalle.dns-black-hole.update.plist \
+    > /dev/null 2>&1
 }
 
 # Check if it is an integer

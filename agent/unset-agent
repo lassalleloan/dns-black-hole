@@ -68,7 +68,8 @@ unload_plist() {
   if [ "$verbosity" -eq 2 ]; then
     launchctl unload -w ~/Library/LaunchAgents/com.loanlassalle.dns-black-hole.update.plist
   else
-    launchctl unload -w ~/Library/LaunchAgents/com.loanlassalle.dns-black-hole.update.plist > /dev/null 2>&1
+    launchctl unload -w ~/Library/LaunchAgents/com.loanlassalle.dns-black-hole.update.plist \
+      > /dev/null 2>&1
   fi
 }
 
@@ -92,7 +93,9 @@ remove_plist() {
   else
     rm -rf "$WORKING_DIRECTORY/agent/com.loanlassalle.dns-black-hole.update.plist" > /dev/null 2>&1
 
-    local file_count="$(find ~/Library/LaunchAgents -type f 2> /dev/null | wc -l | sed -E 's/[[:space:]]+//')"
+    local file_count="$(find ~/Library/LaunchAgents -type f 2> /dev/null | \
+      wc -l | \
+      sed -E 's/[[:space:]]+//')"
     if [ "$file_count" -eq 1 ]; then
       rm -rf ~/Library/LaunchAgents > /dev/null 2>&1
     else
@@ -100,7 +103,9 @@ remove_plist() {
     fi
   fi
 
-  local file_count="$(find ~/Library/LaunchAgents -type f 2> /dev/null | wc -l | sed -E 's/[[:space:]]+//')"
+  local file_count="$(find ~/Library/LaunchAgents -type f 2> /dev/null | \
+    wc -l | \
+    sed -E 's/[[:space:]]+//')"
 }
 
 # Check if it is an integer
