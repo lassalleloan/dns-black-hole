@@ -26,6 +26,10 @@ CONTAINER_NAME="$IMAGE_TAG"
 # Working directory
 WORKING_DIRECTORY="$(sed -En 's/^WORKING_DIRECTORY=(\/[^ #]+)(( |#)?.*)$/\1/p' .conf)"
 
+# Current and latest version of StevenBlack/hosts source files
+CURRENT_VERSION="$(sed -En 's/^CURRENT_VERSION=([0-9]+([.][0-9]+)*)(( |#).*)?$/\1/p' .conf)"
+LATEST_VERSION="$(sed -En 's/^LATEST_VERSION=([0-9]+([.][0-9]+)*)(( |#).*)?$/\1/p' .conf)"
+
 # Source and destination directories for the Docker container"s volume
 SRC_VOLUME_1="$WORKING_DIRECTORY/src/hosts"
 DST_VOLUME_1="/dns-black-hole/etc/hosts"
@@ -486,6 +490,12 @@ else
   # Build Docker container
   if ! build_container "$IMAGE_TAG" "$CONTAINER_NAME" "$VERBOSITY"; then
     exit 1
+  fi
+
+  # Audit system
+  if [ "$VERBOSITY" -eq 0 ]; then
+    printf "%s\tinfo\tupgrade\t%s\t%s\t\"Upgrade in progress\"\n" \
+      "$(date -u +%FT%TZ)" "$CURRENT_VERSION" "$LATEST_VERSION" >> .log
   fi
   
   # Start Docker container
