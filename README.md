@@ -27,7 +27,7 @@ In addition, you can enable or disable additional category-specific hosts files 
 Then you can ran the `run-app` script.
 
 ```sh
-sh run-app
+sh -u run-app
 ```
 
 The above command allows you to start a Docker container with all source files of [StevenBlack's hosts repository](https://github.com/StevenBlack/hosts) and generate a hosts file through a Docker volume.
