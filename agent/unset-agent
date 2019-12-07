@@ -6,18 +6,20 @@
 #
 # Author: Loan Lassalle <https://github.com/lassalleloan>
 
-# env.list file based on env.list.example file 
-# and filled with your own values is required
-if [ ! -f env.list ]; then
-  printf "env.list: No such file\n"
+# .conf file based on .conf.example file and filled with your own values
+if [ ! -f .conf ]; then
+  printf ".conf: No such file\n"
   exit 1
 fi
 
 # Working directory
-WORKING_DIRECTORY="$(sed -En 's/^# WORKING_DIRECTORY=(\/[^ #]+)[ #]?.*$/\1/p' env.list)"
+WORKING_DIRECTORY="$(sed -En 's/^# WORKING_DIRECTORY=(\/[^ #]+)[ #]?.*$/\1/p' .conf)"
+
+# Agent property list file
+AGENT_PLIST="~/Library/LaunchAgents/com.loanlassalle.dns-black-hole.update.plist"
 
 # Default verbosity level
-VERBOSITY="$(sed -En 's/^# VERBOSITY=([0-9]{1})$/\1/p' env.list)"
+VERBOSITY="$(sed -En 's/^# VERBOSITY=([0-9]{1})$/\1/p' .conf)"
 
 # Display a banner
 banner() {
@@ -44,20 +46,23 @@ usage() {
 stop_agent() {
   local verbosity="$1"
 
+  local agent_name="com.loanlassalle.dns-black-hole.update"
+
   if [ "$verbosity" -ne 0 ]; then
     printf "Stopping the agent\n"
   fi
 
   if [ "$verbosity" -eq 2 ]; then
-    launchctl stop com.loanlassalle.dns-black-hole.update
+    launchctl stop "$agent_name"
   else
-    launchctl stop com.loanlassalle.dns-black-hole.update > /dev/null 2>&1
+    launchctl stop "$agent_name" > /dev/null 2>&1
   fi
 }
 
 # Unload the property list file
 unload_plist() {
-  local verbosity="$1"
+  local agent_plist="$1"
+  local verbosity="$2"
 
   if [ "$verbosity" -ne 0 ]; then
     printf "Stopping the agent\n"
@@ -66,32 +71,34 @@ unload_plist() {
   # Stops and unloads and disables the job
   # The job will NOT restart on the next login/restart
   if [ "$verbosity" -eq 2 ]; then
-    launchctl unload -w ~/Library/LaunchAgents/com.loanlassalle.dns-black-hole.update.plist
+    launchctl unload -w "$agent_plist"
   else
-    launchctl unload -w ~/Library/LaunchAgents/com.loanlassalle.dns-black-hole.update.plist \
-      > /dev/null 2>&1
+    launchctl unload -w "$agent_plist" > /dev/null 2>&1
   fi
 }
 
 # Remove the property list file
 remove_plist() {
-  local verbosity="$1"
+  local agent_plist="$1"
+  local verbosity="$2"
+
+  local property_list_file="$WORKING_DIRECTORY/agent/com.loanlassalle.dns-black-hole.update.plist"
 
   if [ "$verbosity" -ne 0 ]; then
     printf "Removing the property list file\n"
   fi
 
   if [ "$verbosity" -eq 2 ]; then
-    rm -r "$WORKING_DIRECTORY/agent/com.loanlassalle.dns-black-hole.update.plist"
+    rm -r "$property_list_file"
 
     local file_count="$(find ~/Library/LaunchAgents -type f | wc -l | sed -E 's/[[:space:]]+//')"
     if [ "$file_count" -eq 1 ]; then
       rm -r ~/Library/LaunchAgents
     else
-      rm -r ~/Library/LaunchAgents/com.loanlassalle.dns-black-hole.update.plist
+      rm -r "$agent_plist"
     fi
   else
-    rm -rf "$WORKING_DIRECTORY/agent/com.loanlassalle.dns-black-hole.update.plist" > /dev/null 2>&1
+    rm -rf "$property_list_file" > /dev/null 2>&1
 
     local file_count="$(find ~/Library/LaunchAgents -type f 2> /dev/null | \
       wc -l | \
@@ -99,7 +106,7 @@ remove_plist() {
     if [ "$file_count" -eq 1 ]; then
       rm -rf ~/Library/LaunchAgents > /dev/null 2>&1
     else
-      rm -rf ~/Library/LaunchAgents/com.loanlassalle.dns-black-hole.update.plist > /dev/null 2>&1
+      rm -rf "$agent_plist" > /dev/null 2>&1
     fi
   fi
 
@@ -148,7 +155,7 @@ while getopts ":v:h" option; do
       exit
       ;;
     :)
-      printf "%s: argument required\n" "$OPTARG"
+      printf "%s: required argument\n" "$OPTARG"
       exit 1
       ;;
     \?)
@@ -164,5 +171,5 @@ if [ "$VERBOSITY" -ne 0 ]; then
 fi
 
 stop_agent "$VERBOSITY"
-unload_plist "$VERBOSITY"
-remove_plist "$VERBOSITY"
+unload_plist "$AGENT_PLIST" "$VERBOSITY"
+remove_plist "$AGENT_PLIST" "$VERBOSITY"

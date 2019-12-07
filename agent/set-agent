@@ -101,14 +101,19 @@ copy_plist() {
 load_plist() {
   local verbosity="$1"
 
+  local agent_plist="~/Library/LaunchAgents/com.loanlassalle.dns-black-hole.update.plist"
+
   if [ "$verbosity" -ne 0 ]; then
     printf "Loading the property list file\n"
   fi
 
   # Load the job while also marking the job as "not disabled"
   # The job will restart on the next login/reboot.
-  launchctl load -w ~/Library/LaunchAgents/com.loanlassalle.dns-black-hole.update.plist \
-    > /dev/null 2>&1
+  if [ "$verbosity" -eq 2 ]; then
+    launchctl load -w "$agent_plist"
+  else
+    launchctl load -w "$agent_plist" > /dev/null 2>&1
+  fi
 }
 
 # Check if it is an integer
@@ -151,7 +156,7 @@ while getopts ":v:h" option; do
       exit
       ;;
     :)
-      printf "%s: argument required\n" "$OPTARG"
+      printf "%s: required argument\n" "$OPTARG"
       exit 1
       ;;
     \?)
