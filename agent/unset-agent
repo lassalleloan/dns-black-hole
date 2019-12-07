@@ -13,13 +13,13 @@ if [ ! -f .conf ]; then
 fi
 
 # Working directory
-WORKING_DIRECTORY="$(sed -En 's/^WORKING_DIRECTORY=(\/[^ #]+)[ #]?.*$/\1/p' .conf)"
+WORKING_DIRECTORY="$(sed -En 's/^WORKING_DIRECTORY=(\/[^ #]+)(( |#)?.*)$/\1/p' .conf)"
 
 # Agent property list file
-AGENT_PLIST="~/Library/LaunchAgents/com.loanlassalle.dns-black-hole.update.plist"
+AGENT_PLIST=~/Library/LaunchAgents/com.loanlassalle.dns-black-hole.update.plist
 
 # Default verbosity level
-VERBOSITY="$(sed -En 's/^VERBOSITY=([0-9]{1})$/\1/p' .conf)"
+VERBOSITY="$(sed -En 's/^VERBOSITY=([0-9]{1})(( |#).*)?$/\1/p' .conf)"
 
 # Display a banner
 banner() {
