@@ -26,11 +26,11 @@
             <string>run-app</string>
 
             <!--
-                Maximum verbosity level for debugging
+                Verbosity level for debugging
             -->
             <!--
                 <string>-v</string>
-                <string>2</string>
+                <string><verbosity-level></string>
             -->
         </array>
 
