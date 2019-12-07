@@ -6,21 +6,20 @@
 #
 # Author: Loan Lassalle <https://github.com/lassalleloan>
 
-# env.list file based on env.list.example file 
-# and filled with your own values is required
-if [ ! -f env.list ]; then
-  printf "env.list: No such file\n"
+# .conf file based on .conf.example file and filled with your own values
+if [ ! -f .conf ]; then
+  printf ".conf: No such file\n"
   exit 1
 fi
 
 # Working directory
-WORKING_DIRECTORY="$(sed -En 's/^# WORKING_DIRECTORY=(\/[^ #]+)[ #]?.*$/\1/p' env.list)"
+WORKING_DIRECTORY="$(sed -En 's/^# WORKING_DIRECTORY=(\/[^ #]+)[ #]?.*$/\1/p' .conf)"
 
 # Property list file
 PROPERTY_LIST_FILE="$WORKING_DIRECTORY/agent/com.loanlassalle.dns-black-hole.update.plist"
 
 # Default verbosity level
-VERBOSITY="$(sed -En 's/^# VERBOSITY=([0-9]{1})[ #]?.*$/\1/p' env.list)"
+VERBOSITY="$(sed -En 's/^# VERBOSITY=([0-9]{1})[ #]?.*$/\1/p' .conf)"
 
 # Display a banner
 banner() {
@@ -52,7 +51,7 @@ create_plist() {
     printf "Creating the property list file\n"
   fi
 
-  # Copy the plist.example file
+  # Copy the property list file
   if [ "$verbosity" -eq 2 ]; then
     cp "$property_list_file.example" "$property_list_file"
   else
@@ -62,17 +61,17 @@ create_plist() {
   # Edit the working directory in property list file
   sed -i '' -E "s|<absolute-path>|$WORKING_DIRECTORY|" "$property_list_file"
 
-  # Edit debugging outputs in property list file
-  if [ "$verbosity" -eq 2 ]; then
+  # Edit verbosity level and debugging outputs in property list file
+  if [ "$verbosity" -eq 0 ]; then
 
-    # Delete XML comments at the 31st, 34th, 40th and 45th line 
-    # Change the 8-space tab from 32nd to 33rd and from 41st line to 44th line
-    sed -i '' '31d;34d;32,33s/            /        /;40d;45d;41,44s/            /        /' \
-      "$property_list_file"
+
+    # Delete debugging parameters
+    sed -i '' '27,34d;36,46d' "$property_list_file"
   else
 
-    # Delete XML comments from 28nd line to 38th line
-    sed -i '' '27,34d;36,46d' "$property_list_file"
+    # Enable debugging parameters
+    sed -i '' "31d;34d;32,33s/            /        /;s/<verbosity-level>/$verbosity/;\
+      40d;45d;41,44s/            /        /" "$property_list_file"
   fi
 }
 
