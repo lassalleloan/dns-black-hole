@@ -8,7 +8,7 @@ WORKING_DIRECTORY=<absolute-path>
 # Default verbosity level
 # 0 -- no ouput
 # 1 -- step information
-# 2 -- interactive
+# 2 -- all information
 VERBOSITY=1
 
 # Current and latest version of StevenBlack/hosts source files

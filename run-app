@@ -85,7 +85,7 @@ usage() {
   printf "  -f, --force                     Force the application to run, bypass any prior checking\n"
   printf "  -p, --prune                     Remove all unused Docker data\n"
   printf "  -w, --wipe                      Remove all Docker data\n"
-  printf "  -v, --verbosity (0 | 1 | 2)     Level of verbosity: no ouput, step information, interactive\n"
+  printf "  -v, --verbosity (0 | 1 | 2)     Level of verbosity: no ouput, step information (default), all information\n"
   printf "  -h, --help                      Help on how to use this script\n"
 }
 

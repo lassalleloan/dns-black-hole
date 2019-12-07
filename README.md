@@ -71,7 +71,7 @@ Options:
   -f, --force                     Force the application to run, bypass any prior checking
   -p, --prune                     Remove all unused Docker data
   -w, --wipe                      Remove all Docker data
-  -v, --verbosity (0 | 1 | 2)     Level of verbosity: no ouput, step information, interactive
+  -v, --verbosity (0 | 1 | 2)     Level of verbosity: no ouput, step information (default), all information
   -h, --help                      Help on how to use this script
 ```
 

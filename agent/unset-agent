@@ -38,7 +38,7 @@ usage() {
   printf "  Loan Lassalle - <https://github.com/lassalleloan>\n"
   printf "\n"
   printf "Options:\n"
-  printf "  -v, --verbosity (0 | 1 | 2)     Level of verbosity: no ouput, step information, interactive\n"
+  printf "  -v, --verbosity (0 | 1 | 2)     Level of verbosity: no ouput, step information (default), all information\n"
   printf "  -h, --help                      Help on how to use this script\n"
 }
 
