@@ -7,7 +7,7 @@
 # Author: Loan Lassalle <https://github.com/lassalleloan>
 
 # env.list based on env.list.example and .conf file based on .conf.example file 
-# filled with your own values is required
+# both filled with your own values
 if [ ! -f env.list ]; then
   printf "env.list: No such file\n"
   exit 1
