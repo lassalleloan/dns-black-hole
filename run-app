@@ -6,7 +6,7 @@
 #
 # Author: Loan Lassalle <https://github.com/lassalleloan>
 
-# env.list based on env.list.example and .conf file based on .conf.example file 
+# env.list and .conf file based on .conf.example file 
 # both filled with your own values
 if [ ! -f env.list ]; then
   printf "env.list: No such file\n"
