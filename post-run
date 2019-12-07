@@ -44,12 +44,13 @@ usage() {
 hard_link() {
   local hard_link_src_file="$1"
   local verbosity="$2"
+  
+  local is_hard_link=$(stat -f "%l" /etc/hosts)
 
   if [ "$verbosity" -ne 0 ]; then
     printf "Creation of hard link between /etc/hosts and %s\n" "$hard_link_src_file"
   fi
 
-  local is_hard_link=$(stat -f "%l" /etc/hosts)
   if [ "$is_hard_link" -le 1 ]; then
     printf "sudo command is required to create the hard link, please run the following command:\n"
     printf "sudo ln -f %s /etc/hosts\n" "$hard_link_src_file"
