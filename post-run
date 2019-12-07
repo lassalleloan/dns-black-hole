@@ -132,7 +132,7 @@ hard_link "$HARD_LINK_SRC_FILE" "$VERBOSITY"
 # Flush the local DNS cache
 flush_dns_cache "$VERBOSITY"
 
-# Edit CURRENT_VERSION variable in .conf file
+# Update the current version in .conf file
 sed -i '' -E "/^CURRENT_VERSION=$CURRENT_VERSION(( |#).*)?$/ s/$CURRENT_VERSION/$LATEST_VERSION/" \
   .conf
 
