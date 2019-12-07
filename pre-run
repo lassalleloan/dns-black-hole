@@ -38,13 +38,13 @@ check_updates() {
   local current_version="$1"
   local verbosity="$2"
 
+  # Retrieve the latest version number of StevenBlack/hosts source files
+  local latest_version="$(curl --silent https://raw.githubusercontent.com/StevenBlack/hosts/master/package.json | \
+    sed -En 's/^[ ]*"version": "([0-9]+([.][0-9]+)*)",$/\1/p')"
+
   if [ "$verbosity" -ne 0 ]; then
     printf "Checking for updates\n"
   fi
-
-  # Retrieve the version number of StevenBlack/hosts source files
-  local latest_version="$(curl --silent https://raw.githubusercontent.com/StevenBlack/hosts/master/package.json | \
-    sed -En 's/^[ ]*"version": "([0-9]+([.][0-9]+)*)",$/\1/p')"
 
   if [ "$verbosity" -eq 2 ]; then
     printf "Current version: %*s\n" 12 "$current_version"
