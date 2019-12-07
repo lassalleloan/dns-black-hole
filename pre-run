@@ -42,7 +42,7 @@ check_updates() {
     printf "Checking for updates\n"
   fi
 
-  # Retrieve the version number
+  # Retrieve the version number of StevenBlack/hosts source files
   local latest_version="$(curl --silent https://raw.githubusercontent.com/StevenBlack/hosts/master/package.json | \
     sed -En 's/^[ ]*"version": "([0-9]+([.][0-9]+)*)",$/\1/p')"
 
@@ -51,13 +51,14 @@ check_updates() {
     printf "Latest version: %*s\n" 13 "$latest_version"
   fi
 
+  # Check if the latest version is greater than the current version
   if [ ! -f src/hosts ] || \
     [ ! -s src/hosts ] || \
     [ "$(printf '%s\n' "$current_version" "$latest_version" | \
       sort -rV | \
       head -n 1)" != "$current_version" ]; then
 
-    # Edit LATEST_VERSION variable in .conf file
+    # Update the lastest version in .conf file
     sed -i '' -E "/^LATEST_VERSION=$current_version(( |#).*)?$/ s/$current_version/$latest_version/" \
       .conf
 
