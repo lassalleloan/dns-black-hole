@@ -18,12 +18,13 @@ If you need more details or explanations about this repository, feel free to exp
 ## Usage
 
 Before running `run-app` script, you must create and fill with your own values the following files:
-* env.list file based on env.list.example file
+* .conf file based on .conf.example file
 * blacklist file based on blacklist.example file
 * myhosts file based on myhosts.example file
 * whitelist files based on whitelist.example file
 
-And then you can ran the `run-app` script.
+In addition, you can enable or disable additional category-specific hosts files to include in the amalgamation. To do this, you must modify env.list file.  
+Then you can ran the `run-app` script.
 
 ```sh
 sh run-app
@@ -47,7 +48,7 @@ Here are the steps of `run-app` script:
    8. Remove Docker images unsued
    9. Stop Docker if it was not running before the launch of the script
 3. Running `post-run` script
-   1. Creation of hard link between /etc/hosts and `$WORKING_DIRECTORY`/dns-black-hole/src/hosts (variable in env.list file)
+   1. Creation of hard link between /etc/hosts and `$WORKING_DIRECTORY`/dns-black-hole/src/hosts (variable in the configuration file .conf)
    2. Flushing of local DNS cache
 
 **Note:** `pre-run` and `post-run` scripts are present to allow you to add processes before and after the hosts file is generated.
@@ -55,7 +56,7 @@ Here are the steps of `run-app` script:
 The following output shows you how to use `run-app` script, all its options and their utility.
 
 ```sh
-Usage: run-app [--interactive | --detach --force --verbosity (0 | 1 | 2) | --prune --verbosity (0 | 1 | 2) | --wipe --verbosity (0 | 1 | 2)]
+Usage: run-app [--interactive | --detach --force [--verbosity (0 | 1 | 2)] | --prune [--verbosity (0 | 1 | 2)] | --wipe [--verbosity (0 | 1 | 2)]]
 
 Manage the dns-black-hole app
 
@@ -219,7 +220,7 @@ sudo log config --mode "private_data:off"
 
 ### How to reverse changes made to macOS system files
 
-The only file affected by scripts is /etc/hosts. They create a hard link between /etc/hosts and `$WORKING_DIRECTORY`/dns-black-hole/src/hosts variable in env.list file.  
+The only file affected by scripts is /etc/hosts. They create a hard link between /etc/hosts and `$WORKING_DIRECTORY`/dns-black-hole/src/hosts variable in the configuration file .conf.  
 The creation of this hard link will change rights of the original file /etc/hosts because this hard link must be readable and writable by the current user without administrator rights.  
 If you need to reverse these changes, you need to run following commands on /etc/hosts.
 
