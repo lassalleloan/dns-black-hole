@@ -42,6 +42,11 @@ check_updates() {
   local latest_version="$(curl --silent https://raw.githubusercontent.com/StevenBlack/hosts/master/package.json | \
     sed -En 's/^[ ]*"version": "([0-9]+([.][0-9]+)*)",$/\1/p')"
 
+  # Check if the latest version number has been retrieved
+  if [ -z "$latest_version" ]; then
+    latest_version="0.0.0"
+  fi
+
   if [ "$verbosity" -ne 0 ]; then
     printf "Checking for updates\n"
   fi
@@ -71,8 +76,14 @@ check_updates() {
 
     # Audit system
     if [ "$verbosity" -eq 0 ]; then
-      printf "%s\tinfo\tupdate\t%s\t%s\t\"No new version available\"\n" \
-        "$(date -u +%FT%TZ)" "$current_version" "$latest_version" >> .log
+      printf "%s\tinfo\tupdate\t" "$(date -u +%FT%TZ)" >> .log
+
+      if [ "$latest_version" = "0.0.0" ]; then
+        printf "%s\t%s\t\"Lastest version number not retrieved\"\n" \
+          "$current_version" "$latest_version" >> .log
+      else
+        printf "%s\t%s\t\"No new version available\"\n" "$current_version" "$latest_version" >> .log
+      fi
     fi
 
     # Stop all future process
