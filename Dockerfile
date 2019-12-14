@@ -20,6 +20,7 @@ RUN apk add --no-cache python3 py3-lxml wget && \
 
 WORKDIR /dns-black-hole/hosts-master
 
+# Environment variables come from .conf configuration file 
 ENTRYPOINT "python3" \
     "updateHostsFile.py" \
     "--auto" \
