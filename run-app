@@ -6,12 +6,8 @@
 #
 # Author: Loan Lassalle <https://github.com/lassalleloan>
 
-# env.list and .conf file based on .conf.example file 
-# both filled with your own values
-if [ ! -f env.list ]; then
-  printf "env.list: No such file\n"
-  exit 1
-elif [ ! -f .conf ]; then
+# .conf file based on .conf.example file and filled with your own values
+if [ ! -f .conf ]; then
   printf ".conf: No such file\n"
   exit 1
 fi
