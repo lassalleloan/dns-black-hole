@@ -23,7 +23,6 @@ Before running `run-app` script, you must create and fill with your own values t
 * myhosts file based on myhosts.example file
 * whitelist files based on whitelist.example file
 
-In addition, you can enable or disable additional category-specific hosts files to include in the amalgamation. To do this, you must modify env.list file.  
 Then you can ran the `run-app` script.
 
 ```sh
@@ -56,7 +55,7 @@ Here are the steps of `run-app` script:
 The following output shows you how to use `run-app` script, all its options and their utility.
 
 ```sh
-Usage: run-app [--interactive | --detach --force [--verbosity (0 | 1 | 2)] | --prune [--verbosity (0 | 1 | 2)] | --wipe [--verbosity (0 | 1 | 2)]]
+Usage: run-app [--interactive [--extension <extension_name> ...] | --detach --force [--extension <extension_name> ...] [--verbosity (0 | 1 | 2)] | --prune [--verbosity (0 | 1 | 2)] | --wipe [--verbosity (0 | 1 | 2)]]
 
 Manage the dns-black-hole app
 
@@ -68,6 +67,7 @@ Author:
 Options:
   -i, --interactive               Keep stdin open even if not attached and allocate a pseudo-tty
   -d, --detach                    Leave the container running in the background (default processing mode)
+  -e, --extension                 Enable additional category-specific
   -f, --force                     Force the application to run, bypass any prior checking
   -p, --prune                     Remove all unused Docker data
   -w, --wipe                      Remove all Docker data
@@ -96,6 +96,26 @@ The domains you list in the whitelist file are excluded from the final hosts fil
 The whitelist uses partial matching. Therefore if you whitelist google-analytics.com, that domain and all its subdomains won't be merged into the final hosts file.
 
 The whitelist is not tracked by git, so any changes you make won't be overridden when you git pull this repo from origin in the future.
+
+## How to temporarily unblock DNS requests for a category-specific of domains
+
+To temporarily unblock DNS requests for a category-specific of domains, it is recommended to run `run-app` script with [--extension <extension_name> ...] option.  
+It allows you to access to certain category-specific domains without having to edit the .conf configuration file.
+
+When you want to cancel the previous change, you just have to execute the `run-app` script with [--force] option.
+
+**Example:** You want to temporarily unblock DNS requests for social category-specific of domains.
+
+```sh
+sh -u run-app --extension fakenews --extension gambling --extension porn
+```
+
+Now you can access to the social category-specific of domains.  
+When you want to cancel the previous change.
+
+```sh
+sh -u run-app --force
+```
 
 ## How to temporarily unblock DNS requests for a specific domain
 

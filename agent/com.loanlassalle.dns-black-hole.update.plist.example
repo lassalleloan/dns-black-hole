@@ -13,7 +13,7 @@
         
         <!--
             Absolute path must be configured
-            Concatenation between WORKING_DIRECTORY in env.list file and 
+            Concatenation between WORKING_DIRECTORY in .conf file and 
             the path "/agent/com.loanlassalle.dns-black-hole.update.plist"
         -->
         <key>WorkingDirectory</key>
