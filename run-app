@@ -469,7 +469,7 @@ else
   fi
 
   # Pre-run script
-  if [ "$FORCE" = false ]; then
+  if [ "$INTERACTIVE" = false ] && [ "$FORCE" = false ]; then
     if [ "$VERBOSITY" -ne 0 ]; then
       printf "\n"
     fi
