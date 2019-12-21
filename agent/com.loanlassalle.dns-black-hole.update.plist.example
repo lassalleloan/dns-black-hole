@@ -48,12 +48,12 @@
         <true/>
 
         <!--
-            Run the job once every 24 hours
+            Run the job every hour
             If the system is asleep, the job will be started the next time the computer wakes up.
             If multiple intervals transpire before the computer is woken, 
             those events will be coalesced into one event upon wake from sleep.
         -->
         <key>StartInterval</key>
-        <integer>86400</integer>
+        <integer>3600</integer>
     </dict>
 </plist>
