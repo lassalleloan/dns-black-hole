@@ -518,7 +518,7 @@ else
       printf "\n"
     fi
 
-    if ! sh pre-run -v "$VERBOSITY"; then
+    if ! sh -u pre-run -v "$VERBOSITY"; then
       exit 0
     fi
   fi
@@ -567,5 +567,5 @@ else
   if [ "$VERBOSITY" -ne 0 ]; then
     printf "\n"
   fi
-  sh post-run -v "$VERBOSITY"
+  sh -u post-run -v "$VERBOSITY"
 fi
