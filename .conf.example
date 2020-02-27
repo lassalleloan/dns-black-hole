@@ -5,12 +5,6 @@
 # Working directory (absolute path must be configured)
 WORKING_DIRECTORY=<absolute-path>
 
-# Default verbosity level
-# 0 -- no ouput
-# 1 -- step information
-# 2 -- interactive
-VERBOSITY=1
-
 # Additional category-specific
 # To disable an extension, you must comment the line with '#' at the beginning of the line
 # If you add another extension, you must also add the environment variable to the Docker container
@@ -24,3 +18,9 @@ EXTENSION_4=social
 # Do not modify if you do not know what you are doing
 CURRENT_VERSION=2.5.0
 LATEST_VERSION=2.5.0
+
+# Default verbosity level
+# 0 -- no ouput
+# 1 -- step information
+# 2 -- interactive
+VERBOSITY=1
