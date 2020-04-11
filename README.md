@@ -47,7 +47,7 @@ Here are the steps of `run-app` script:
    8. Remove Docker images unsued
    9. Stop Docker if it was not running before the launch of the script
 3. Running `post-run` script
-   1. Creation of hard link between /etc/hosts and `$WORKING_DIRECTORY`/dns-black-hole/src/hosts (variable in the configuration file .conf)
+   1. Creation of hard link between /etc/hosts and `$WORKING_DIRECTORY`/dns-black-hole/src/etc/hosts (variable in the configuration file .conf)
    2. Flushing of local DNS cache
 
 **Note:** `pre-run` and `post-run` scripts are present to allow you to add processes before and after the hosts file is generated.
@@ -240,13 +240,13 @@ sudo log config --mode "private_data:off"
 
 ### How to reverse changes made to macOS system files
 
-The only file affected by scripts is /etc/hosts. They create a hard link between /etc/hosts and `$WORKING_DIRECTORY`/dns-black-hole/src/hosts variable in the configuration file .conf.  
+The only file affected by scripts is /etc/hosts. They create a hard link between /etc/hosts and `$WORKING_DIRECTORY`/dns-black-hole/src/etc/hosts variable in the configuration file .conf.  
 The creation of this hard link will change rights of the original file /etc/hosts because this hard link must be readable and writable by the current user without administrator rights.  
 If you need to reverse these changes, you need to run following commands on /etc/hosts.
 
 ```sh
-rm dns-black-hole/src/hosts
-sudo cp -f dns-black-hole/backup/hosts.bk /etc/hosts
+rm src/etc/hosts
+sudo cp -f backup/hosts.bk /etc/hosts
 sudo chown root:wheel /etc/hosts
 ```
 

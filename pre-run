@@ -57,8 +57,8 @@ check_updates() {
   fi
 
   # Check if the latest version is greater than the current version
-  if [ ! -f src/hosts ] || \
-    [ ! -s src/hosts ] || \
+  if [ ! -f src/etc/hosts ] || \
+    [ ! -s src/etc/hosts ] || \
     [ "$(printf '%s\n' "$current_version" "$latest_version" | \
       sort -rV | \
       head -n 1)" != "$current_version" ]; then

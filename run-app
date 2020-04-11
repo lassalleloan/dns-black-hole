@@ -24,8 +24,8 @@ WORKING_DIRECTORY="$(sed -En 's/^WORKING_DIRECTORY=(\/[^ #]+)(( |#)?.*)$/\1/p' .
 WORKING_DIRECTORY="${WORKING_DIRECTORY%/}"
 
 # Source and destination directories for the Docker container's volume
-SRC_VOLUME_1="$WORKING_DIRECTORY/src/hosts"
-DST_VOLUME_1="/dns-black-hole/etc/hosts"
+SRC_VOLUME_1="$WORKING_DIRECTORY/src/etc/"
+DST_VOLUME_1="/dns-black-hole/etc/"
 
 SRC_VOLUME_2="$WORKING_DIRECTORY/src/blacklist"
 DST_VOLUME_2="/dns-black-hole/hosts-master/blacklist"
@@ -170,10 +170,10 @@ start_container() {
       --name "$container_name" \
       --rm \
       --tty \
-      --volume "$src_directory_1:$dst_directory_1" \
-      --volume "$src_directory_2:$dst_directory_2" \
-      --volume "$src_directory_3:$dst_directory_3" \
-      --volume "$src_directory_4:$dst_directory_4" \
+      --mount type=bind,source="$src_directory_1",target="$dst_directory_1" \
+      --mount type=bind,source="$src_directory_2",target="$dst_directory_2",readonly \
+      --mount type=bind,source="$src_directory_3",target="$dst_directory_3",readonly \
+      --mount type=bind,source="$src_directory_4",target="$dst_directory_4",readonly \
       "$image_tag"
   else
     if [ "$verbosity" -eq 2 ]; then
@@ -181,20 +181,20 @@ start_container() {
         ${envs[@]} \
         --name "$container_name" \
         --rm \
-        --volume "$src_directory_1:$dst_directory_1" \
-        --volume "$src_directory_2:$dst_directory_2" \
-        --volume "$src_directory_3:$dst_directory_3" \
-        --volume "$src_directory_4:$dst_directory_4" \
+      --mount type=bind,source="$src_directory_1",target="$dst_directory_1" \
+      --mount type=bind,source="$src_directory_2",target="$dst_directory_2",readonly \
+      --mount type=bind,source="$src_directory_3",target="$dst_directory_3",readonly \
+      --mount type=bind,source="$src_directory_4",target="$dst_directory_4",readonly \
         "$image_tag"
     else
       docker run \
         ${envs[@]} \
         --name "$container_name" \
         --rm \
-        --volume "$src_directory_1:$dst_directory_1" \
-        --volume "$src_directory_2:$dst_directory_2" \
-        --volume "$src_directory_3:$dst_directory_3" \
-        --volume "$src_directory_4:$dst_directory_4" \
+      --mount type=bind,source="$src_directory_1",target="$dst_directory_1" \
+      --mount type=bind,source="$src_directory_2",target="$dst_directory_2",readonly \
+      --mount type=bind,source="$src_directory_3",target="$dst_directory_3",readonly \
+      --mount type=bind,source="$src_directory_4",target="$dst_directory_4",readonly \
         "$image_tag" >/dev/null 2>&1
     fi
   fi
