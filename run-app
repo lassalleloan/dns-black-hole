@@ -170,10 +170,10 @@ start_container() {
       --name "$container_name" \
       --rm \
       --tty \
-      --volume "$src_directory_1":"$dst_directory_1" \
-      --volume "$src_directory_2":"$dst_directory_2" \
-      --volume "$src_directory_3":"$dst_directory_3" \
-      --volume "$src_directory_4":"$dst_directory_4" \
+      --volume "$src_directory_1:$dst_directory_1" \
+      --volume "$src_directory_2:$dst_directory_2" \
+      --volume "$src_directory_3:$dst_directory_3" \
+      --volume "$src_directory_4:$dst_directory_4" \
       "$image_tag"
   else
     if [ "$verbosity" -eq 2 ]; then
@@ -181,20 +181,20 @@ start_container() {
         ${envs[@]} \
         --name "$container_name" \
         --rm \
-        --volume "$src_directory_1":"$dst_directory_1" \
-        --volume "$src_directory_2":"$dst_directory_2" \
-        --volume "$src_directory_3":"$dst_directory_3" \
-        --volume "$src_directory_4":"$dst_directory_4" \
+        --volume "$src_directory_1:$dst_directory_1" \
+        --volume "$src_directory_2:$dst_directory_2" \
+        --volume "$src_directory_3:$dst_directory_3" \
+        --volume "$src_directory_4:$dst_directory_4" \
         "$image_tag"
     else
       docker run \
         ${envs[@]} \
         --name "$container_name" \
         --rm \
-        --volume "$src_directory_1":"$dst_directory_1" \
-        --volume "$src_directory_2":"$dst_directory_2" \
-        --volume "$src_directory_3":"$dst_directory_3" \
-        --volume "$src_directory_4":"$dst_directory_4" \
+        --volume "$src_directory_1:$dst_directory_1" \
+        --volume "$src_directory_2:$dst_directory_2" \
+        --volume "$src_directory_3:$dst_directory_3" \
+        --volume "$src_directory_4:$dst_directory_4" \
         "$image_tag" >/dev/null 2>&1
     fi
   fi
