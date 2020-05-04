@@ -11,7 +11,10 @@ WORKING_DIRECTORY="$(sed -En 's/^WORKING_DIRECTORY=(\/[^ #]+)(( |#)?.*)$/\1/p' .
 WORKING_DIRECTORY="${WORKING_DIRECTORY%/}"
 
 # Source file for creating hard link
-HARD_LINK_SRC_FILE="$WORKING_DIRECTORY/src/etc/hosts"
+# Note: After each execution, the inode of "$SRC_FILE" changes
+# "$HARD_LINK_SRC_FILE" exists to keep the hardlink fonctional by keeping the same inode
+SRC_FILE="$WORKING_DIRECTORY/src/etc/hosts"
+HARD_LINK_SRC_FILE="$WORKING_DIRECTORY/src/etc/hosts.hardlink"
 
 # Current and latest version of StevenBlack/hosts source files
 CURRENT_VERSION="$(sed -En 's/^CURRENT_VERSION=([0-9]+([.][0-9]+)*)(( |#).*)?$/\1/p' .conf)"
@@ -43,14 +46,20 @@ usage() {
 
 # Create a hard link between /etc/hosts and $hard_link_src_file
 hard_link() {
-  local hard_link_src_file="$1"
-  local verbosity="$2"
+  local src_file="$1"
+  local hard_link_src_file="$2"
+  local verbosity="$3"
   
   local is_hard_link=$(stat -f "%l" /etc/hosts)
 
   if [ "$verbosity" -ne 0 ]; then
     printf "Creation of hard link between /etc/hosts and %s\n" "$hard_link_src_file"
   fi
+ 
+  # Copy of the source file to keep the hardlink fonctional
+  # Note: After each execution, the inode of "$SRC_FILE" changes
+  # "$HARD_LINK_SRC_FILE" exists to keep the hardlink fonctional by keeping the same inode
+  \cp "$SRC_FILE" "$HARD_LINK_SRC_FILE"
 
   if [ "$is_hard_link" -le 1 ]; then
     printf "sudo command is required to create the hard link, please run the following command:\n"
@@ -129,7 +138,7 @@ if [ "$VERBOSITY" -ne 0 ]; then
 fi
 
 # Create a hard link to /etc/hosts of local machine
-hard_link "$HARD_LINK_SRC_FILE" "$VERBOSITY"
+hard_link "$SRC_FILE" "$HARD_LINK_SRC_FILE" "$VERBOSITY"
 
 # Flush the local DNS cache
 flush_dns_cache "$VERBOSITY"

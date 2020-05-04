@@ -5,6 +5,7 @@ agent/stdout
 agent/stderr
 backup/hosts.bk
 src/etc/hosts
+src/etc/hosts.hardlink
 src/myhosts
 src/whitelist
 src/blacklist
